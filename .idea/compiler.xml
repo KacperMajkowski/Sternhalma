@@ -6,12 +6,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="Client" />
         <module name="TPL4" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="Client" target="17" />
+      <module name="Server" target="17" />
       <module name="TPL4" target="17" />
-      <module name="TPL4Client" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

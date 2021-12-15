@@ -1,6 +1,8 @@
 package main;
 
 import javafx.application.Platform;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,30 +27,56 @@ import java.util.Scanner;
 
 public class Controller
 {
-    /** Referencja do panelu, w którym znajdują się pola typu Circle */
-    @FXML
-    private Pane boardPane;
-    @FXML
-    private Label infoBar;
 
     private CommunicationManager communicationManager;
 
-    private boolean guiBlocked = true;
+    private Color currentPlayersColor = Color.WHITE;
 
-    /**
-     * Funkcja uruchamiana przy starcie aplikacji
-     */
-    @FXML
-    private void initialize()
-    {
-        newConnection();
-        //showAlert( "Połącz się z serwerem, aby zagrać" );
+    private Color playerColor;
+
+    public Color getPlayerColor() {
+        return playerColor;
+    }
+
+    public void setPlayerColor(Color playerColor) {
+        this.playerColor = playerColor;
+    }
+
+    public boolean checkIfSelectPossible(Color color) {
+        if (color == playerColor && color == currentPlayersColor) {
+            return true;
+        }
+        return false;
+    };
+
+    public boolean makeMove(int x, int y, int x1, int y1) {
+        communicationManager.writeLine("MOVE "+x+" "+y+" "+x1+" "+y1);
+        String read = null;
+        try {
+             read = communicationManager.readLine();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (read == "MOVE "+x+" "+y+" "+x1+" "+y1) {
+            try {
+                read = communicationManager.readLine();
+                currentPlayersColor = Color.web(read);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public String waitForServerResponse() {
+        return null;
     }
 
     /**
      * Tworzenie nowego okna dialogowego na wpisanie parametrów połączenia
      */
-    private void newConnection()
+    public void newConnection()
     {
         Dialog<Pair<String, String>> dialog = new Dialog<>();
         dialog.setTitle("Establishing a connection");
@@ -125,7 +153,7 @@ public class Controller
     private void connectToServer(String host, int port) throws Exception {
 
         communicationManager = new CommunicationManager(host, port);
-        int playersNumber = Integer.parseInt(communicationManager.readLine()); //czyta liczbe graczy
+        int playersNumber = Integer.parseInt(communicationManager.readLine());
 
         if (playersNumber < 2) {
             waitForPlayers();
@@ -133,11 +161,13 @@ public class Controller
 
         Dialog<String> dialog = new Dialog<>();
 
-        dialog.setHeaderText("There are currently" + playersNumber + "player in the lobby");
+        dialog.setHeaderText("There are currently " + playersNumber + "/6 players in the lobby");
 
         ButtonType start_game = new ButtonType("Start game", ButtonBar.ButtonData.OK_DONE);
         ButtonType wait = new ButtonType("Wait for more players", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().addAll(start_game, wait);
+
+        dialog.getDialogPane().getScene().getWindow().setOnCloseRequest(Event::consume);
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == start_game) {
@@ -165,8 +195,11 @@ public class Controller
         alert.setTitle("Waiting for more players");
         alert.setHeaderText("Please wait while other players are connecting");
 
+        alert.getDialogPane().getScene().getWindow().setOnCloseRequest(Event::consume);
+
         if (communicationManager.readLine() != null) {
             alert.close();
         }
     }
+
 }

@@ -5,4 +5,7 @@ module com.example.client {
 
     opens main to javafx.fxml;
     exports main;
+
+    opens board to javafx.fxml;
+    exports board;
 }

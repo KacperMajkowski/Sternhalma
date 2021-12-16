@@ -38,8 +38,12 @@ public class Controller
         return playerColor;
     }
 
-    public void setPlayerColor(Color playerColor) {
-        this.playerColor = playerColor;
+    public void setPlayerColor() {
+        try {
+            this.playerColor = Color.web(communicationManager.readLine());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean checkIfSelectPossible(Color color) {
@@ -153,6 +157,7 @@ public class Controller
     private void connectToServer(String host, int port) throws Exception {
         communicationManager = new CommunicationManager(host, port);
         int playersNumber = Integer.parseInt(communicationManager.readLine());
+        setPlayerColor(); //zaimplementowac na serwerze
         if (playersNumber < 2) {
             communicationManager.writeLine("WAIT");
             waitForPlayers();
@@ -189,15 +194,16 @@ public class Controller
     }
 
     private void waitForPlayers() throws Exception {
-        System.out.println("SA");
         Alert alert = new Alert( Alert.AlertType.INFORMATION);
         alert.setTitle("Waiting for more players");
         alert.setHeaderText("Please wait while other players are connecting");
-
         alert.getDialogPane().getScene().getWindow().setOnCloseRequest(Event::consume);
+        alert.showAndWait();
 
         if (communicationManager.readLine() != null) { //zamiast null START
-            //alert.close();
+            alert.close();
         }
     }
+
+
 }

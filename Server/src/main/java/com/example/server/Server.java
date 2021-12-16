@@ -44,9 +44,7 @@ public class Server {
             playersNumber++;
             communicationManager.writeLine(String.valueOf(playersNumber));
             String read = communicationManager.readLine();
-            System.out.println(read);
             if (read.equals("WAIT")) {
-                System.out.println("WAIT");
                 connectPlayer();
             }
             else if (read == "START") {

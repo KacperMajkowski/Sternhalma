@@ -6,6 +6,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 class Game {
 	
@@ -29,9 +31,10 @@ class Game {
 		}
 		
 		/* Send START message to all players and start their threads */
+		var pool = Executors.newFixedThreadPool(200);
 		for(Player p : players) {
 			p.output.println("START");
-			p.run();
+			pool.execute(p);
 		}
 		
 		/* Get starting player */

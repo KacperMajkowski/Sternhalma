@@ -15,7 +15,7 @@ import java.util.List;
 
 public class Board {
 
-    /** Referencja do panelu, w którym znajdują się pola typu Circle */
+    /** Reference to the pane containing Circle objects */
     @FXML
     private Pane boardPane;
     @FXML
@@ -46,6 +46,7 @@ public class Board {
         private void tryToMakeMove(Field clickedField) {
             if (controller.makeMove(selectedField.getX(),selectedField.getY(),clickedField.getX(),clickedField.getY())) {
                 makeMove(controller.getPlayerColor(),selectedField.getX(),selectedField.getY(),clickedField.getX(),clickedField.getY());
+                //chyba usunac metode i wywolywac waitForServer
             }
         }
 
@@ -57,12 +58,12 @@ public class Board {
     };
 
     /**
-     * Funkcja uruchamiana przy starcie aplikacji
+     * Function launched at the start od the application
      */
     @FXML
     private void initialize() throws Exception {
         controller = new Controller();
-        //controller.newConnection();
+        controller.newConnection();
         assignFields();
         waitForYourTurn();
     }

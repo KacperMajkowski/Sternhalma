@@ -45,7 +45,7 @@ class Game {
 		} else if (player.nextPlayer == null) {
 			throw new IllegalStateException("You don't have an opponent yet");
 		} else if (!checkIfMoveValid(x1, y1, x2, y2)) {
-			throw new IllegalStateException("Cell already occupied");
+			throw new IllegalStateException("Cell already occupied"); //zamiast tego wyslij message (wlasciwie dowolny)
 		}
 		
 		movePawn(x1, y1, x2, y2);
@@ -92,10 +92,9 @@ class Game {
 			/* Game start */
 			input = new Scanner(socket.getInputStream());
 			output = new PrintWriter(socket.getOutputStream(), true);
-			output.println("WELCOME PLAYER " + playerNumber);
 			if (playerNumber == 1) {
 				currentPlayer = this;
-				output.println("MESSAGE Waiting for opponent to connect");
+				output.println(3);
 			} else {
 				nextPlayer = currentPlayer;
 				nextPlayer.nextPlayer = this; //TODO Change for more than 2 players

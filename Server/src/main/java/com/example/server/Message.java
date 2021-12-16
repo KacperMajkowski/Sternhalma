@@ -1,8 +1,4 @@
-package main;
-
-import java.net.ServerSocket;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+package com.example.server;
 
 public class Message {
     private String code;

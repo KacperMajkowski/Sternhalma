@@ -47,7 +47,7 @@ public class Server {
             if (read.equals("WAIT")) {
                 connectPlayer();
             }
-            else if (read == "START") {
+            else if (read.equals("START")) {
                 createGame();
             }
 
@@ -58,10 +58,13 @@ public class Server {
         }
     }
 
-    private void createGame() {
+    private void createGame() throws Exception {
         Game game = new Game();
         for( int i = 0; i < playersNumber; i++ ) {
-            pool.execute(game.new Player(playerSockets.get(i), 1));
+            communicationManager = new CommunicationManager(playerSockets.get(i));
+            communicationManager.writeLine("START");
+            System.out.println("Player " + i + " connected");
+            pool.execute(game.new Player(playerSockets.get(i), i));
         }
     }
 }

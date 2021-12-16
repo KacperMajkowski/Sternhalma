@@ -20,10 +20,7 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 public class Controller
 {
@@ -47,11 +44,8 @@ public class Controller
     }
 
     public boolean checkIfSelectPossible(Color color) {
-        if (color == playerColor && color == currentPlayersColor) {
-            return true;
-        }
-        return false;
-    };
+        return color == playerColor && color == currentPlayersColor;
+    }
 
     public boolean makeMove(int x, int y, int x1, int y1) {
         communicationManager.writeLine("MOVE "+x+" "+y+" "+x1+" "+y1);
@@ -61,7 +55,7 @@ public class Controller
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (read == "MOVE "+x+" "+y+" "+x1+" "+y1) {
+        if (Objects.equals(read, "MOVE " + x + " " + y + " " + x1 + " " + y1)) {
             try {
                 read = communicationManager.readLine();
                 currentPlayersColor = Color.web(read);
@@ -143,6 +137,7 @@ public class Controller
 
             try {
                 connectToServer(host, port);
+                System.out.println("Connected to server");
             } catch (Exception e) {
                 Alert alert = new Alert( Alert.AlertType.ERROR);
                 alert.setTitle("Exception");

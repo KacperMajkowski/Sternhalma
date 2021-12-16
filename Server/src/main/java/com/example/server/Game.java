@@ -3,14 +3,43 @@ package com.example.server;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 class Game {
 	
 	//
-	private Player[][] board = new Player[13][17];
+	private Player[][] board;
 	
 	Player currentPlayer;
+	List<Player> players;
+	List<Socket> playerSockets;
+	int playersNumber;
+	
+	public Game(List<Socket> playerSocket) {
+		this.playerSockets = playerSocket;
+		this.playersNumber = playerSockets.size();
+		/*Create list of players */
+		this.players = new ArrayList<>();
+		
+		/* Add players to list based on sockets */
+		for(int i = 0; i < playersNumber; i++) {
+			players.add(new Player(playerSockets.get(i), i));
+		}
+		
+		/* Send START message to all players and start their threads */
+		for(Player p : players) {
+			p.output.println("START");
+			p.run();
+		}
+		
+		/* Get starting player */
+		currentPlayer = players.get(0);
+		
+		/* Create board */
+		board = new Player[13][17];
+	}
 	
 	/* Check if game has a winner */
 	public boolean hasWinner() {
@@ -41,15 +70,17 @@ class Game {
 	* */
 	public synchronized void move(int x1, int y1, int x2, int y2, Player player) {
 		if (player != currentPlayer) {
-			throw new IllegalStateException("Not your turn");
+			currentPlayer.output.println("Not your turn");
 		} else if (player.nextPlayer == null) {
-			throw new IllegalStateException("You don't have an opponent yet");
+			currentPlayer.output.println("No opponent");
 		} else if (!checkIfMoveValid(x1, y1, x2, y2)) {
-			throw new IllegalStateException("Cell already occupied"); //zamiast tego wyslij message (wlasciwie dowolny)
+			currentPlayer.output.println("Invalid move");
+		} else {
+			movePawn(x1, y1, x2, y2);
+			currentPlayer = currentPlayer.nextPlayer;
 		}
 		
-		movePawn(x1, y1, x2, y2);
-		currentPlayer = currentPlayer.nextPlayer;
+		
 	}
 	
 	/**
@@ -59,15 +90,15 @@ class Game {
 	 */
 	class Player implements Runnable {
 		
-		int playerNumber;
+		int thisPlayerNumber;
 		Player nextPlayer;
 		Socket socket;
 		Scanner input;
 		PrintWriter output;
 		
-		public Player(Socket socket, int playerNumber) {
+		public Player(Socket socket, int thisPlayerNumber) {
 			this.socket = socket;
-			this.playerNumber = playerNumber;
+			this.thisPlayerNumber = thisPlayerNumber;
 		}
 		
 		@Override
@@ -79,11 +110,11 @@ class Game {
 				e.printStackTrace();
 			} finally {
 				if (nextPlayer != null && nextPlayer.output != null) {
-					nextPlayer.output.println("OTHER_PLAYER_LEFT");
+					sendToOther("PLAYER_LEFT");
 				}
 				try {
 					socket.close();
-					} catch (IOException e) {
+					} catch (IOException ignored) {
 				}
 			}
 		}
@@ -92,13 +123,16 @@ class Game {
 			/* Game start */
 			input = new Scanner(socket.getInputStream());
 			output = new PrintWriter(socket.getOutputStream(), true);
-			if (playerNumber == 1) {
-				currentPlayer = this;
-				output.println(3);
-			} else {
-				nextPlayer = currentPlayer;
-				nextPlayer.nextPlayer = this; //TODO Change for more than 2 players
-				nextPlayer.output.println("MESSAGE Your move");
+			
+			/* Set up next player for each player */
+			for(Player p : players) {
+				if(p.thisPlayerNumber == ((thisPlayerNumber + 1) % playersNumber)) {
+					nextPlayer = p;
+				}
+			}
+			
+			if (thisPlayerNumber == 0) {
+				sendToSelf("MESSAGE Your move");
 			}
 		}
 		
@@ -133,19 +167,36 @@ class Game {
 		private void processMoveCommand(int x1, int y1, int x2, int y2) {
 			try {
 				move(x1, y1, x2, y2, this);
-				output.println("VALID_MOVE");
+				sendToSelf("VALID_MOVE");
 				
 				/* Sends command OPPONENT_MOVED (playerNumber) (x1)(y1)(x2)(y2) */
-				nextPlayer.output.println("OPPONENT_MOVED " + currentPlayer.playerNumber + " " + x1 + "" + y1 + "" + x2 + "" + y2);
+				sendToAll("OPPONENT_MOVED " + currentPlayer.thisPlayerNumber + " " + x1 + "" + y1 + "" + x2 + "" + y2);
 				if (hasWinner()) {
-					output.println("VICTORY");
-					nextPlayer.output.println("DEFEAT");
+					sendToSelf("VICTORY");
+					sendToOther("DEFEAT");
 				} else if (boardFilledUp()) {
-					output.println("TIE");
-					nextPlayer.output.println("TIE");
+					sendToAll("TIE");
 				}
 			} catch (IllegalStateException e) {
-				output.println("MESSAGE " + e.getMessage());
+				sendToSelf("MESSAGE " + e.getMessage());
+			}
+		}
+		
+		private void sendToSelf(String message) {
+			currentPlayer.output.println(message);
+		}
+		
+		private void sendToAll(String message) {
+			for(Player p : players) {
+				p.output.println(message);
+			}
+		}
+		
+		private void sendToOther(String message) {
+			for(Player p : players) {
+				if(p != currentPlayer) {
+					p.output.println(message);
+				}
 			}
 		}
 	}

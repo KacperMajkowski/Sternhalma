@@ -8,8 +8,8 @@ import java.net.Socket;
 class CommunicationManager
 {
     private Socket socket;
-    private BufferedReader in;
-    private PrintWriter out;
+    public BufferedReader in;
+    public PrintWriter out;
 
     CommunicationManager(Socket s) throws Exception
     {

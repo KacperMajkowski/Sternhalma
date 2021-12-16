@@ -17,10 +17,10 @@ import java.util.concurrent.Executors;
 
 public class Server {
 
-    private ServerSocket serverSocket;
-    private List<Socket> playerSockets = new ArrayList<>();
+    private final ServerSocket serverSocket;
+    private final List<Socket> playerSockets = new ArrayList<>();
     int playersNumber;
-    ExecutorService pool = Executors.newFixedThreadPool(200);
+    //ExecutorService pool = Executors.newFixedThreadPool(200);
     CommunicationManager communicationManager;
 
     Server( int port ) throws Exception
@@ -58,13 +58,17 @@ public class Server {
         }
     }
 
-    private void createGame() throws Exception {
-        Game game = new Game();
+    private void createGame() {
+        
+        new Game(playerSockets);
+        
+        /* <Moved to Game constructor>
+        
         for( int i = 0; i < playersNumber; i++ ) {
             communicationManager = new CommunicationManager(playerSockets.get(i));
             communicationManager.writeLine("START");
             System.out.println("Player " + i + " connected");
             pool.execute(game.new Player(playerSockets.get(i), i));
-        }
+        }*/
     }
 }

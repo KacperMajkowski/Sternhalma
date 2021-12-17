@@ -41,7 +41,8 @@ public class Player
                 case "COLOR":
                     Color color = Color.web(words[1]);
                     setCurrentPlayerColor(color);
-
+                case "ADD":
+                    board.addPiece(Color.web(words[1]),Integer.parseInt(words[2]),Integer.parseInt(words[3]));
                 default:
 
             }

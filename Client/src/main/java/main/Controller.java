@@ -20,7 +20,10 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Scanner;
 
 public class Controller
 {
@@ -44,8 +47,11 @@ public class Controller
     }
 
     public boolean checkIfSelectPossible(Color color) {
-        return color == playerColor && color == currentPlayersColor;
-    }
+        if (color == playerColor && color == currentPlayersColor) {
+            return true;
+        }
+        return false;
+    };
 
     public boolean makeMove(int x, int y, int x1, int y1) {
         communicationManager.writeLine("MOVE "+x+" "+y+" "+x1+" "+y1);
@@ -55,7 +61,7 @@ public class Controller
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (Objects.equals(read, "MOVE " + x + " " + y + " " + x1 + " " + y1)) {
+        if (read == "MOVE "+x+" "+y+" "+x1+" "+y1) {
             try {
                 read = communicationManager.readLine();
                 currentPlayersColor = Color.web(read);
@@ -137,7 +143,6 @@ public class Controller
 
             try {
                 connectToServer(host, port);
-                System.out.println("Connected to server");
             } catch (Exception e) {
                 Alert alert = new Alert( Alert.AlertType.ERROR);
                 alert.setTitle("Exception");
@@ -152,7 +157,6 @@ public class Controller
     private void connectToServer(String host, int port) throws Exception {
         communicationManager = new CommunicationManager(host, port);
         int playersNumber = Integer.parseInt(communicationManager.readLine());
-        setPlayerColor(); //zaimplementowac na serwerze
         if (playersNumber < 2) {
             communicationManager.writeLine("WAIT");
             waitForPlayers();
@@ -185,7 +189,8 @@ public class Controller
         Optional<String> result = dialog.showAndWait();
 
         result.ifPresent(s -> communicationManager.writeLine(s));
-
+        setPlayerColor();
+        String dummy = communicationManager.readLine();
     }
 
     private void waitForPlayers() throws Exception {
@@ -194,11 +199,18 @@ public class Controller
         alert.setHeaderText("Please wait while other players are connecting");
         alert.getDialogPane().getScene().getWindow().setOnCloseRequest(Event::consume);
         alert.showAndWait();
-
-        if (communicationManager.readLine() != null) { //zamiast null START
+        setPlayerColor();
+        if (communicationManager.readLine().equals("START")) {
             alert.close();
         }
     }
 
 
+    public Color waitForColorSet() {
+        while(true) {
+            if (playerColor != null) {
+                return playerColor;
+            }
+        }
+    }
 }

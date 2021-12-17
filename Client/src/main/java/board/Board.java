@@ -2,9 +2,13 @@ package board;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -19,7 +23,9 @@ public class Board {
     @FXML
     private Pane boardPane;
     @FXML
-    private Label infoBar;
+    private Label playerColorLabel;
+    @FXML
+    private Label currentColorLabel;
 
     private Controller controller;
 
@@ -65,9 +71,19 @@ public class Board {
         controller = new Controller();
         controller.newConnection();
         assignFields();
+        setPlayerColor();
         waitForYourTurn();
     }
 
+    private void setPlayerColor() {
+        Color playerColor = controller.waitForColorSet();
+        playerColorLabel.setBackground(new Background(new BackgroundFill(playerColor, CornerRadii.EMPTY, Insets.EMPTY)));
+    }
+
+    private void setCurrentTurn() {
+        Color color = Color.WHITE;
+        currentColorLabel.setBackground(new Background(new BackgroundFill(color, CornerRadii.EMPTY, Insets.EMPTY)));
+    }
     private void waitForYourTurn() {
         //String response = controller.waitForServerResponse();
         //switch ()

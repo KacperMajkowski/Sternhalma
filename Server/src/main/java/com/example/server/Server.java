@@ -1,12 +1,5 @@
 package com.example.server;
 
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -43,6 +36,7 @@ public class Server {
             communicationManager = new CommunicationManager(playerSockets.get(playersNumber));
             playersNumber++;
             communicationManager.writeLine(String.valueOf(playersNumber));
+            communicationManager.writeLine(PlayerColors.RED.color.toString());
             String read = communicationManager.readLine();
             if (read.equals("WAIT")) {
                 connectPlayer();
@@ -50,7 +44,6 @@ public class Server {
             else if (read.equals("START")) {
                 createGame();
             }
-
         }
         catch( Exception e )
         {

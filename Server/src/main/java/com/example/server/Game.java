@@ -29,21 +29,30 @@ class Game {
 		for(int i = 0; i < playersNumber; i++) {
 			players.add(new Player(playerSockets.get(i), i));
 		}
-		
+
+		setPlayersColors();
+
 		/* Send START message to all players and start their threads */
 		var pool = Executors.newFixedThreadPool(200);
 		for(Player p : players) {
+			p.output.println(p.playerColor.color.toString());
 			p.output.println("START");
 			pool.execute(p);
 		}
 		
-		/* Get starting player */
-		currentPlayer = players.get(0);
+		randomFirstPlayer();
 		
 		/* Create board */
 		board = new Player[13][17];
 	}
-	
+
+	private void setPlayersColors() {
+		for(Player p : players) {
+			p.playerColor = PlayerColors.RED;
+		}
+		//TODO set playerColor for each Player. Remember that the colors will depend on the total players number
+	}
+
 	/* Check if game has a winner */
 	public boolean hasWinner() {
 		//TODO Check if winner
@@ -65,6 +74,11 @@ class Game {
 	/* Move the pawn */
 	public void movePawn(int x1, int y1, int x2, int y2){
 		//TODO Move pawn
+	}
+
+	public void randomFirstPlayer() {
+		currentPlayer = players.get(0);
+		//TODO
 	}
 	
 	/* When player tries to move
@@ -92,7 +106,8 @@ class Game {
 	 * and PrintWriter.
 	 */
 	class Player implements Runnable {
-		
+
+		PlayerColors playerColor;
 		int thisPlayerNumber;
 		Player nextPlayer;
 		Socket socket;

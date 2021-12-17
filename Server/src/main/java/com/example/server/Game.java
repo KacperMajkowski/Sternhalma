@@ -128,8 +128,7 @@ class Game {
 	 * and PrintWriter.
 	 */
 	class Player implements Runnable {
-
-		PlayerColors playerColor;
+		
 		int thisPlayerNumber;
 		Player nextPlayer;
 		Socket socket;

@@ -1,5 +1,7 @@
 package com.example.server;
 
+import javafx.scene.paint.Color;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -210,10 +212,13 @@ class Game {
 		private void processMoveCommand(int x1, int y1, int x2, int y2) {
 			
 				if(move(x1, y1, x2, y2, this)) {
+					
+					board.setColor(x1, y1, Color.WHITE);
+					board.setColor(x2, y2, currentPlayer.getColor().color);
 				
-				/* Sends command OPPONENT_MOVED (playerNumber) (x1)(y1)(x2)(y2) */
-				sendToAll("MOVE" + " " + x1 + " " + y1 + " " + x2 + " " + y2);
-				sendToAll("COLOR " + currentPlayer.getColor().next().toString());
+					/* Sends command OPPONENT_MOVED (playerNumber) (x1)(y1)(x2)(y2) */
+					sendToAll("MOVE" + " " + x1 + " " + y1 + " " + x2 + " " + y2);
+					sendToAll("COLOR " + currentPlayer.getColor().next().toString());
 				
 				if (hasWinner()) {
 					sendToAll("WIN");

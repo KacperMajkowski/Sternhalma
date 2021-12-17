@@ -33,6 +33,8 @@ public class Client {
     private List<Field> fields = new ArrayList<>();
     private CommunicationManager communicationManager;
     private Color playerColor;
+    
+    String boardString;
 
     private EventHandler<? super MouseEvent> OnFieldClickedListener = new EventHandler<MouseEvent>() {
         @Override
@@ -51,6 +53,14 @@ public class Client {
             e.printStackTrace();
         }
         playerColorLabel.setBackground(new Background(new BackgroundFill(playerColor, CornerRadii.EMPTY, Insets.EMPTY)));
+    }
+    
+    private void setBoardString() {
+        try {
+            boardString = communicationManager.readLine();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setCurrentTurn() {
@@ -71,7 +81,7 @@ public class Client {
      * Function launched at the start od the application
      */
     @FXML
-    private void initialize() {
+    private void initialize() throws Exception {
 
         Thread turn = new Thread() {
             public void run() {
@@ -83,14 +93,15 @@ public class Client {
 
         newConnection();
         assignFields();
+        setBoardString();
         createPlayer();
         turn.start();
         player.waitForServerResponse();
     }
 
-    private void createPlayer() {
+    private void createPlayer() throws Exception {
         board = new Board(fields);
-        player = new Player(board, communicationManager, playerColor);
+        player = new Player(board, communicationManager, playerColor, boardString);
     }
 
     private void assignFields() {

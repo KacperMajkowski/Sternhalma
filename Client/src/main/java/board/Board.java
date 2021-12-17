@@ -52,7 +52,7 @@ public class Board {
         getField(x2, y2).setColor(Color.WHITE);
     }
 
-    private void addPiece(Color color, int x1, int y1) {
+    public void addPiece(Color color, int x1, int y1) {
         getField(x1,y1).setColor(color);
     }
 }

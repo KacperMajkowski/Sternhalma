@@ -21,7 +21,7 @@ class Game {
 	
 	Board board;
 	
-	public Game(List<Socket> playerSocket) {
+	public Game(List<Socket> playerSocket, Board board) {
 		this.playerSockets = playerSocket;
 		this.playersNumber = playerSockets.size();
 		/*Create list of players */
@@ -47,10 +47,7 @@ class Game {
 		setFirstPlayer();
 		
 		/* Create board */
-		int rows = 13;
-		int columns = 17;
-		board = new Board(rows, columns);
-		board.setupBoard();
+		this.board = board;
 	}
 
 	private void setPlayersColors() {
@@ -96,7 +93,8 @@ class Game {
 	
 	/* Move the pawn */
 	public void movePawn(int x1, int y1, int x2, int y2){
-		//TODO Move pawn
+		board.setColor(x1, y1, Color.WHITE);
+		board.setColor(x2, y2, currentPlayer.getColor().color);
 	}
 	
 	/* Imo to że czerwony zawsze zaczyna jest ok */
@@ -141,6 +139,7 @@ class Game {
 		public PlayerColors getColor() {
 			return color;
 		}
+		
 		public void setColor(PlayerColors color) {
 			this.color = color;
 		}
@@ -213,8 +212,7 @@ class Game {
 			
 				if(move(x1, y1, x2, y2, this)) {
 					
-					board.setColor(x1, y1, Color.WHITE);
-					board.setColor(x2, y2, currentPlayer.getColor().color);
+					movePawn(x1, y1, x2, y2);
 				
 					/* Sends command OPPONENT_MOVED (playerNumber) (x1)(y1)(x2)(y2) */
 					sendToAll("MOVE" + " " + x1 + " " + y1 + " " + x2 + " " + y2);

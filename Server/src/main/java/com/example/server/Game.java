@@ -27,7 +27,12 @@ class Game {
 		
 		/* Add players to list based on sockets */
 		for(int i = 0; i < playersNumber; i++) {
-			players.add(new Player(playerSockets.get(i), i));
+			try {
+				players.add(new Player(playerSockets.get(i), i));
+			} catch (Exception ignored) {
+			
+			}
+			
 		}
 
 		setPlayersColors();
@@ -114,9 +119,11 @@ class Game {
 		Scanner input;
 		PrintWriter output;
 		
-		public Player(Socket socket, int thisPlayerNumber) {
+		public Player(Socket socket, int thisPlayerNumber) throws Exception {
 			this.socket = socket;
 			this.thisPlayerNumber = thisPlayerNumber;
+			this.input = new Scanner(socket.getInputStream());
+			this.output = new PrintWriter(socket.getOutputStream(), true);
 		}
 		
 		@Override
@@ -137,10 +144,8 @@ class Game {
 			}
 		}
 		
-		private void setup() throws IOException {
+		private void setup() {
 			/* Game start */
-			input = new Scanner(socket.getInputStream());
-			output = new PrintWriter(socket.getOutputStream(), true);
 			
 			/* Set up next player for each player */
 			for(Player p : players) {

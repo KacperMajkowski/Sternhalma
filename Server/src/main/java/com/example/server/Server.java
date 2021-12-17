@@ -52,6 +52,7 @@ public class Server {
     }
 
     private void createGame() {
+        System.out.println("Debug");
         
         new Game(playerSockets);
         

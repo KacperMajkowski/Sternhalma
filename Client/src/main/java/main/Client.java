@@ -1,80 +1,117 @@
 package main;
 
-import javafx.application.Platform;
+import board.Board;
+import board.Field;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.stage.Stage;
 import javafx.util.Pair;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
 
-public class Controller
-{
+public class Client {
 
+    /** Reference to the pane containing Circle objects */
+    @FXML
+    private Pane boardPane;
+    @FXML
+    private Label playerColorLabel;
+    @FXML
+    private Label currentColorLabel;
+
+    private Board board;
+    private Player player;
+    private List<Field> fields = new ArrayList<>();
     private CommunicationManager communicationManager;
-
-    private Color currentPlayersColor = Color.WHITE;
-
     private Color playerColor;
 
-    public Color getPlayerColor() {
-        return playerColor;
-    }
+    private EventHandler<? super MouseEvent> OnFieldClickedListener = new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent mouseEvent) {
+            Circle circle = (Circle) mouseEvent.getSource();
+            Field clickedField = getFieldfromCircle(circle);
 
-    public void setPlayerColor() {
-        try {
-            this.playerColor = Color.web(communicationManager.readLine());
-        } catch (Exception e) {
-            e.printStackTrace();
+            player.handleMouseClicked(clickedField);
         }
-    }
-
-    public boolean checkIfSelectPossible(Color color) {
-        if (color == playerColor && color == currentPlayersColor) {
-            return true;
-        }
-        return false;
     };
 
-    public boolean makeMove(int x, int y, int x1, int y1) {
-        communicationManager.writeLine("MOVE "+x+" "+y+" "+x1+" "+y1);
-        String read = null;
+    private void setPlayerColor() {
         try {
-             read = communicationManager.readLine();
+            playerColor = Color.web(communicationManager.readLine());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (read == "MOVE "+x+" "+y+" "+x1+" "+y1) {
-            try {
-                read = communicationManager.readLine();
-                currentPlayersColor = Color.web(read);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return true;
-        }
-        return false;
+        playerColorLabel.setBackground(new Background(new BackgroundFill(playerColor, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
-    public String waitForServerResponse() {
+    private void setCurrentTurn() {
+        Color color = player.getCurrentPlayerColor();
+        currentColorLabel.setBackground(new Background(new BackgroundFill(color, CornerRadii.EMPTY, Insets.EMPTY)));
+    }
+
+    private Field getFieldfromCircle(Circle circle) {
+        for (Field f: fields){
+            if (f.getCircle().equals(circle)) {
+                return f;
+            }
+        }
         return null;
+    }
+
+    /**
+     * Function launched at the start od the application
+     */
+    @FXML
+    private void initialize() {
+
+        Thread turn = new Thread() {
+            public void run() {
+                while (true) {
+                    setCurrentTurn();
+                }
+            }
+        };
+
+        newConnection();
+        assignFields();
+        createPlayer();
+        turn.start();
+        player.waitForServerResponse();
+    }
+
+    private void createPlayer() {
+        board = new Board(fields);
+        player = new Player(board, communicationManager, playerColor);
+    }
+
+    private void assignFields() {
+        int x = 0;
+        int y = 0;
+
+        for( Node node : boardPane.getChildren() )
+        {
+            fields.add(new Field(x,y,(Circle) node));
+            node.setOnMouseClicked(OnFieldClickedListener);
+
+            if( x == 12 )
+            {
+                x = 0;
+                y++;
+            }
+            else
+            {
+                x++;
+            }
+        }
     }
 
     /**
@@ -161,56 +198,46 @@ public class Controller
             communicationManager.writeLine("WAIT");
             waitForPlayers();
         }
+        else {
+            Dialog<String> dialog = new Dialog<>();
 
-        Dialog<String> dialog = new Dialog<>();
+            dialog.setHeaderText("There are currently " + playersNumber + "/6 players in the lobby");
 
-        dialog.setHeaderText("There are currently " + playersNumber + "/6 players in the lobby");
+            ButtonType start_game = new ButtonType("Start game", ButtonBar.ButtonData.OK_DONE);
+            ButtonType wait = new ButtonType("Wait for more players", ButtonBar.ButtonData.CANCEL_CLOSE);
+            dialog.getDialogPane().getButtonTypes().addAll(start_game, wait);
 
-        ButtonType start_game = new ButtonType("Start game", ButtonBar.ButtonData.OK_DONE);
-        ButtonType wait = new ButtonType("Wait for more players", ButtonBar.ButtonData.CANCEL_CLOSE);
-        dialog.getDialogPane().getButtonTypes().addAll(start_game, wait);
+            dialog.getDialogPane().getScene().getWindow().setOnCloseRequest(Event::consume);
 
-        dialog.getDialogPane().getScene().getWindow().setOnCloseRequest(Event::consume);
-
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == start_game) {
-                return "START";
-            }
-            else {
-                try {
-                    waitForPlayers();
-                } catch (Exception e) {
-                    e.printStackTrace();
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == start_game) {
+                    return "START";
                 }
-                return "WAIT";
-            }
-        });
+                else {
+                    try {
+                        dialog.close();
+                        waitForPlayers();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return "WAIT";
+                }
+            });
 
-        Optional<String> result = dialog.showAndWait();
+            Optional<String> result = dialog.showAndWait();
 
-        result.ifPresent(s -> communicationManager.writeLine(s));
-        setPlayerColor();
-        String dummy = communicationManager.readLine();
+            result.ifPresent(s -> communicationManager.writeLine(s));
+            setPlayerColor();
+        }
     }
 
-    private void waitForPlayers() throws Exception {
+    private void waitForPlayers() {
         Alert alert = new Alert( Alert.AlertType.INFORMATION);
         alert.setTitle("Waiting for more players");
         alert.setHeaderText("Please wait while other players are connecting");
         alert.getDialogPane().getScene().getWindow().setOnCloseRequest(Event::consume);
         alert.showAndWait();
+
         setPlayerColor();
-        if (communicationManager.readLine().equals("START")) {
-            alert.close();
-        }
-    }
-
-
-    public Color waitForColorSet() {
-        while(true) {
-            if (playerColor != null) {
-                return playerColor;
-            }
-        }
     }
 }

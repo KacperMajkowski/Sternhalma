@@ -12,12 +12,12 @@ import java.util.concurrent.Executors;
 class Game {
 	
 	//
-	private Player[][] board;
-	
 	Player currentPlayer;
 	List<Player> players;
 	List<Socket> playerSockets;
 	int playersNumber;
+	
+	Board board;
 	
 	public Game(List<Socket> playerSocket) {
 		this.playerSockets = playerSocket;
@@ -29,10 +29,7 @@ class Game {
 		for(int i = 0; i < playersNumber; i++) {
 			try {
 				players.add(new Player(playerSockets.get(i), i));
-			} catch (Exception ignored) {
-			
-			}
-			
+			} catch (Exception ignored) {}
 		}
 
 		setPlayersColors();
@@ -45,17 +42,36 @@ class Game {
 			pool.execute(p);
 		}
 		
-		randomFirstPlayer();
+		setFirstPlayer();
 		
 		/* Create board */
-		board = new Player[13][17];
+		int rows = 13;
+		int columns = 17;
+		board = new Board(rows, columns);
+		board.setupBoard();
 	}
 
 	private void setPlayersColors() {
-		for(Player p : players) {
-			p.playerColor = PlayerColors.RED;
+		if(playersNumber == 2) {
+			players.get(0).setColor(PlayerColors.RED);
+			players.get(1).setColor(PlayerColors.GREEN);
+		} else if (playersNumber == 3) {
+			players.get(0).setColor(PlayerColors.RED);
+			players.get(1).setColor(PlayerColors.BLUE);
+			players.get(2).setColor(PlayerColors.YELLOW);
+		} else if (playersNumber == 4) {
+			players.get(0).setColor(PlayerColors.RED);
+			players.get(1).setColor(PlayerColors.BLUE);
+			players.get(2).setColor(PlayerColors.GREEN);
+			players.get(3).setColor(PlayerColors.ORANGE);
+		} else if (playersNumber == 6) {
+			players.get(0).setColor(PlayerColors.RED);
+			players.get(1).setColor(PlayerColors.PURPLE);
+			players.get(2).setColor(PlayerColors.BLUE);
+			players.get(3).setColor(PlayerColors.GREEN);
+			players.get(4).setColor(PlayerColors.YELLOW);
+			players.get(5).setColor(PlayerColors.ORANGE);
 		}
-		//TODO set playerColor for each Player. Remember that the colors will depend on the total players number
 	}
 
 	/* Check if game has a winner */
@@ -80,29 +96,30 @@ class Game {
 	public void movePawn(int x1, int y1, int x2, int y2){
 		//TODO Move pawn
 	}
-
-	public void randomFirstPlayer() {
+	
+	/* Imo to że czerwony zawsze zaczyna jest ok */
+	 public void setFirstPlayer() {
 		currentPlayer = players.get(0);
-		//TODO
 	}
 	
 	/* When player tries to move
-	* If can - move
-	* If not - throw exception
+	* If can - move, return true
+	* If not - throw exception, return false
 	* */
-	public synchronized void move(int x1, int y1, int x2, int y2, Player player) {
+	public synchronized boolean move(int x1, int y1, int x2, int y2, Player player) {
 		if (player != currentPlayer) {
 			currentPlayer.output.println("Not your turn");
+			return false;
 		} else if (player.nextPlayer == null) {
 			currentPlayer.output.println("No opponent");
+			return false;
 		} else if (!checkIfMoveValid(x1, y1, x2, y2)) {
 			currentPlayer.output.println("Invalid move");
+			return false;
 		} else {
 			movePawn(x1, y1, x2, y2);
-			currentPlayer = currentPlayer.nextPlayer;
+			return true;
 		}
-		
-		
 	}
 	
 	/**
@@ -118,6 +135,14 @@ class Game {
 		Socket socket;
 		Scanner input;
 		PrintWriter output;
+		PlayerColors color;
+		
+		public PlayerColors getColor() {
+			return color;
+		}
+		public void setColor(PlayerColors color) {
+			this.color = color;
+		}
 		
 		public Player(Socket socket, int thisPlayerNumber) throws Exception {
 			this.socket = socket;
@@ -188,20 +213,22 @@ class Game {
 		
 		/* Command process */
 		private void processMoveCommand(int x1, int y1, int x2, int y2) {
-			try {
-				move(x1, y1, x2, y2, this);
+			
+				if(move(x1, y1, x2, y2, this)) {
+				
 				sendToSelf("VALID_MOVE");
 				
 				/* Sends command OPPONENT_MOVED (playerNumber) (x1)(y1)(x2)(y2) */
 				sendToAll("OPPONENT_MOVED " + currentPlayer.thisPlayerNumber + " " + x1 + "" + y1 + "" + x2 + "" + y2);
+				
 				if (hasWinner()) {
 					sendToSelf("VICTORY");
 					sendToOther("DEFEAT");
 				} else if (boardFilledUp()) {
 					sendToAll("TIE");
 				}
-			} catch (IllegalStateException e) {
-				sendToSelf("MESSAGE " + e.getMessage());
+				
+				currentPlayer = currentPlayer.nextPlayer;
 			}
 		}
 		

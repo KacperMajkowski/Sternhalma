@@ -37,7 +37,7 @@ class Game {
 		/* Send START message to all players and start their threads */
 		var pool = Executors.newFixedThreadPool(200);
 		for(Player p : players) {
-			p.output.println(p.playerColor.color.toString());
+			p.output.println(p.getColor());
 			p.output.println("START");
 			pool.execute(p);
 		}
@@ -160,7 +160,7 @@ class Game {
 				e.printStackTrace();
 			} finally {
 				if (nextPlayer != null && nextPlayer.output != null) {
-					sendToOther("PLAYER_LEFT");
+					//sendToOther("PLAYER_LEFT");
 				}
 				try {
 					socket.close();
@@ -178,10 +178,6 @@ class Game {
 					nextPlayer = p;
 				}
 			}
-			
-			if (thisPlayerNumber == 0) {
-				sendToSelf("MESSAGE Your move");
-			}
 		}
 		
 		private void processCommands() {
@@ -198,7 +194,7 @@ class Game {
 					return;
 				} else if (command.startsWith("MOVE")) {
 					
-					/* Takes command "MOVE (x1)(y1)(x2)(y2) */
+					/* Takes command "MOVE (x1) (y1) (x2) (y2) */
 					
 					x1 = Integer.parseInt(command.substring(6, 6));
 					y1 = Integer.parseInt(command.substring(7, 7));
@@ -216,14 +212,12 @@ class Game {
 			
 				if(move(x1, y1, x2, y2, this)) {
 				
-				sendToSelf("VALID_MOVE");
-				
 				/* Sends command OPPONENT_MOVED (playerNumber) (x1)(y1)(x2)(y2) */
-				sendToAll("OPPONENT_MOVED " + currentPlayer.thisPlayerNumber + " " + x1 + "" + y1 + "" + x2 + "" + y2);
+				sendToAll("MOVE" + " " + x1 + " " + y1 + " " + x2 + " " + y2);
+				sendToAll("COLOR " + currentPlayer.getColor().next().toString());
 				
 				if (hasWinner()) {
-					sendToSelf("VICTORY");
-					sendToOther("DEFEAT");
+					sendToAll("WIN");
 				} else if (boardFilledUp()) {
 					sendToAll("TIE");
 				}
@@ -232,21 +226,9 @@ class Game {
 			}
 		}
 		
-		private void sendToSelf(String message) {
-			currentPlayer.output.println(message);
-		}
-		
 		private void sendToAll(String message) {
 			for(Player p : players) {
 				p.output.println(message);
-			}
-		}
-		
-		private void sendToOther(String message) {
-			for(Player p : players) {
-				if(p != currentPlayer) {
-					p.output.println(message);
-				}
 			}
 		}
 	}

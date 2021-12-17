@@ -1,22 +1,24 @@
 package com.example.server;
 
+import javafx.scene.paint.Color;
+
 public class Board {
 	
 	int rows;
 	int columns;
-	PlayerColors[][] board;
+	Color[][] board;
 	
 	Board(int rows, int columns) {
 		this.rows = rows;
 		this.columns = columns;
-		board = new PlayerColors[rows][columns];
+		board = new Color[rows][columns];
 	}
 	
-	PlayerColors getColor(int row, int column) {
+	Color getColor(int row, int column) {
 		return board[row][column];
 	}
 	
-	void setColor(int row, int column, PlayerColors color) {
+	void setColor(int row, int column, Color color) {
 		board[row][column] = color;
 	}
 	
@@ -25,7 +27,7 @@ public class Board {
 		for(int c = 0; c < columns; c++) {
 			for(int r = 0; r < rows; r++) {
 				
-				setColor(c, r, PlayerColors.WHITE);
+				setColor(c, r, Color.WHITE);
 				
 				if((r == 0 && c == 6) ||
 						(r == 1 && c == 5) ||
@@ -37,7 +39,7 @@ public class Board {
 						(r == 3 && c == 5) ||
 						(r == 3 && c == 6) ||
 						(r == 3 && c == 7)) {
-					setColor(c, r, PlayerColors.GREEN);
+					setColor(c, r, PlayerColors.GREEN.color);
 				}
 				
 				if((r == 4 && c == 9) ||
@@ -50,7 +52,7 @@ public class Board {
 						(r == 6 && c == 10) ||
 						(r == 6 && c == 11) ||
 						(r == 7 && c == 10)) {
-					setColor(c, r, PlayerColors.YELLOW);
+					setColor(c, r, PlayerColors.YELLOW.color);
 				}
 				
 				if((r == 9 && c == 10) ||
@@ -63,7 +65,7 @@ public class Board {
 						(r == 12 && c == 10) ||
 						(r == 12 && c == 11) ||
 						(r == 12 && c == 12)) {
-					setColor(c, r, PlayerColors.ORANGE);
+					setColor(c, r, PlayerColors.ORANGE.color);
 				}
 				
 				if((r == 13 && c == 4) ||
@@ -76,7 +78,7 @@ public class Board {
 						(r == 15 && c == 5) ||
 						(r == 15 && c == 6) ||
 						(r == 16 && c == 6)) {
-					setColor(c, r, PlayerColors.RED);
+					setColor(c, r, PlayerColors.RED.color);
 				}
 				
 				if((r == 9 && c == 1) ||
@@ -89,7 +91,7 @@ public class Board {
 						(r == 12 && c == 1) ||
 						(r == 12 && c == 2) ||
 						(r == 12 && c == 3)) {
-					setColor(c, r, PlayerColors.PURPLE);
+					setColor(c, r, PlayerColors.PURPLE.color);
 				}
 				
 				if((r == 6 && c == 0) ||
@@ -102,7 +104,7 @@ public class Board {
 						(r == 8 && c == 1) ||
 						(r == 8 && c == 2) ||
 						(r == 9 && c == 1)) {
-					setColor(c, r, PlayerColors.BLUE);
+					setColor(c, r, PlayerColors.BLUE.color);
 				}
 			}
 		}

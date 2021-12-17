@@ -36,7 +36,6 @@ public class Server {
             communicationManager = new CommunicationManager(playerSockets.get(playersNumber));
             playersNumber++;
             communicationManager.writeLine(String.valueOf(playersNumber));
-            communicationManager.writeLine(PlayerColors.RED.color.toString());
             String read = communicationManager.readLine();
             if (read.equals("WAIT")) {
                 connectPlayer();
@@ -52,7 +51,6 @@ public class Server {
     }
 
     private void createGame() {
-        System.out.println("Debug");
         
         new Game(playerSockets);
         

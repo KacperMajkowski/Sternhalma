@@ -41,7 +41,7 @@ class Game {
 		var pool = Executors.newFixedThreadPool(200);
 		for(Player p : players) {
 			p.output.println(p.playerColor.color.toString());
-			p.output.println("START");
+			//p.output.println("START");
 			pool.execute(p);
 		}
 		
@@ -155,7 +155,7 @@ class Game {
 			}
 			
 			if (thisPlayerNumber == 0) {
-				sendToSelf("MESSAGE Your move");
+				//sendToSelf("MESSAGE Your move");
 			}
 		}
 		

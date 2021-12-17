@@ -8,11 +8,12 @@ public enum PlayerColors {
     ORANGE(Color.ORANGE),
     RED(Color.RED),
     PURPLE(Color.PURPLE),
-    BLUE(Color.BLUE);
+    BLUE(Color.BLUE),
+    WHITE(Color.WHITE); //Added white as blank space, outside the board is null;
 
     public final Color color;
 
-    private PlayerColors(Color color) {
+    PlayerColors(Color color) {
         this.color = color;
     }
 

@@ -12,18 +12,9 @@ public class Server {
     private final List<Socket> playerSockets = new ArrayList<>();
     int playersNumber;
     CommunicationManager communicationManager;
-    
-    int rows = 17;
-    int columns = 13;
-    Board board = new Board(rows, columns);
 
     Server( int port ) throws Exception
     {
-        System.out.println("Before board setup");
-        board.setupBoard();
-        System.out.println("After board setup");
-        System.out.println(createBoardString(board));
-        
         System.out.println("Launching server...");
         try
         {
@@ -34,7 +25,7 @@ public class Server {
         }
         connectPlayer();
     }
-    
+
     private void connectPlayer() throws Exception {
         try
         {
@@ -42,8 +33,8 @@ public class Server {
             communicationManager = new CommunicationManager(playerSockets.get(playersNumber));
             playersNumber++;
             communicationManager.writeLine(String.valueOf(playersNumber));
-            communicationManager.writeLine(PlayerColors.RED.color.toString());
-            communicationManager.writeLine(createBoardString(board));
+            //communicationManager.writeLine(PlayerColors.RED.color.toString());
+            //communicationManager.writeLine(createBoardString(board));
             String read = communicationManager.readLine();
             if (read.equals("WAIT")) {
                 connectPlayer();
@@ -57,19 +48,8 @@ public class Server {
             throw new Exception( "Cannot connect to client: " + e.getMessage() );
         }
     }
-    
-    public String createBoardString(Board board) {
-        String boardString = "";
-        
-        for(int c = 0; c < columns; c++) {
-            for(int r = 0; r < rows; r++) {
-                boardString += board.getColor(r, c) + " " + r + " " + c + " ";
-            }
-        }
-        return boardString;
-    }
 
     private void createGame() {
-        new Game(playerSockets, board);
+        new Game(playerSockets);
     }
 }

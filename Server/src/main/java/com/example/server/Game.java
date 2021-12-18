@@ -12,16 +12,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 class Game {
-	
-	//
+
 	Player currentPlayer;
 	List<Player> players;
 	List<Socket> playerSockets;
 	int playersNumber;
+	int rows = 17;
+	int columns = 13;
+	Board board2 = new Board(rows, columns);
 	
 	Board board;
 	
-	public Game(List<Socket> playerSocket, Board board) {
+	public Game(List<Socket> playerSocket) {
 		this.playerSockets = playerSocket;
 		this.playersNumber = playerSockets.size();
 		/*Create list of players */
@@ -35,12 +37,13 @@ class Game {
 		}
 
 		setPlayersColors();
+		board2.setupBoard();
 
 		/* Send START message to all players and start their threads */
 		var pool = Executors.newFixedThreadPool(200);
 		for(Player p : players) {
-			p.output.println(p.getColor());
-			p.output.println("START");
+			p.output.println(p.getColor());;
+			p.output.println(createBoardString(board2));
 			pool.execute(p);
 		}
 		
@@ -71,6 +74,17 @@ class Game {
 			players.get(4).setColor(PlayerColors.YELLOW);
 			players.get(5).setColor(PlayerColors.ORANGE);
 		}
+	}
+
+	public String createBoardString(Board board) {
+		String boardString = "";
+
+		for(int c = 0; c < columns; c++) {
+			for(int r = 0; r < rows; r++) {
+				boardString += board.getColor(r, c) + " " + r + " " + c + " ";
+			}
+		}
+		return boardString;
 	}
 
 	/* Check if game has a winner */

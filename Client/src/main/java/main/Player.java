@@ -10,17 +10,6 @@ public class Player
     private CommunicationManager communicationManager;
     private Color playerColor;
     private Color currentPlayerColor = Color.RED;
-    private String boardString;
-    
-    public void setBoardString(String boardString) {
-        this.boardString = boardString;
-    }
-    
-    public String getBoardString() {
-        return boardString;
-    }
-    
-    String input = "";
 
     public void setCurrentPlayerColor(Color currentPlayerColor) {
         this.currentPlayerColor = currentPlayerColor;
@@ -30,22 +19,34 @@ public class Player
         return currentPlayerColor;
     }
 
-    public Player(Board board, CommunicationManager communicationManager, Color playerColor, String boardString) {
+    public Player(Board board, CommunicationManager communicationManager, Color playerColor) {
         this.board = board;
         this.communicationManager = communicationManager;
         this.playerColor = playerColor;
-        
-        System.out.println(boardString);
-        String[] words = boardString.split(" ");
-    
-        for(int i = 0; i < words.length; i+=3) {
-            board.addPiece(Color.valueOf(words[i]), Integer.parseInt(words[i+2]), Integer.parseInt(words[i+1]));
+
+        addStartingPieces();
+
+    }
+
+    private void addStartingPieces() {
+        String boardString;
+        try {
+            boardString = communicationManager.readLine();
+            String[] words = boardString.split(" ");
+
+            for(int i = 0; i < words.length; i+=3) {
+                board.addPiece(Color.valueOf(words[i]), Integer.parseInt(words[i+2]), Integer.parseInt(words[i+1]));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public void waitForServerResponse()
     {
+        System.out.println("5");
         while(!playersTurn()) {
+            System.out.println("6");
             String response = null;
             try {
                 response = communicationManager.readLine();

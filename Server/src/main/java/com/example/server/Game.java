@@ -19,9 +19,7 @@ class Game {
 	int playersNumber;
 	int rows = 17;
 	int columns = 13;
-	Board board2 = new Board(rows, columns);
-	
-	Board board;
+	Board board = new Board(rows, columns);
 	
 	public Game(List<Socket> playerSocket) {
 		this.playerSockets = playerSocket;
@@ -37,20 +35,17 @@ class Game {
 		}
 
 		setPlayersColors();
-		board2.setupBoard();
+		board.setupBoard();
 
 		/* Send START message to all players and start their threads */
 		var pool = Executors.newFixedThreadPool(200);
 		for(Player p : players) {
-			p.output.println(p.getColor());;
-			p.output.println(createBoardString(board2));
+			p.output.println(p.getColor());
+			p.output.println(createBoardString(board));
 			pool.execute(p);
 		}
 		
 		setFirstPlayer();
-		
-		/* Create board */
-		this.board = board;
 	}
 
 	private void setPlayersColors() {
@@ -107,8 +102,8 @@ class Game {
 	
 	/* Move the pawn */
 	public void movePawn(int x1, int y1, int x2, int y2){
-		board.setColor(x1, y1, Color.WHITE);
-		board.setColor(x2, y2, currentPlayer.getColor().color);
+		board.setColor(y1, x1, Color.WHITE);
+		board.setColor(y2, x2, currentPlayer.getColor().color);
 	}
 	
 	/* Imo to że czerwony zawsze zaczyna jest ok */
@@ -120,20 +115,25 @@ class Game {
 	* If can - move, return true
 	* If not - throw exception, return false
 	* */
-	public synchronized boolean move(int x1, int y1, int x2, int y2, Player player) {
-		if (player != currentPlayer) {
+	public synchronized boolean moveLegal(int x1, int y1, int x2, int y2, Player player) {
+		System.out.println("Recieved move " + x1 + " " + y1 + " " + x2 + " " + y2);
+		
+		/*if (player != currentPlayer) {
 			currentPlayer.output.println("Not your turn");
+			System.out.println("Not your turn");
 			return false;
 		} else if (player.nextPlayer == null) {
 			currentPlayer.output.println("No opponent");
+			System.out.println("No opponent");
 			return false;
 		} else if (!checkIfMoveValid(x1, y1, x2, y2)) {
 			currentPlayer.output.println("Invalid move");
+			System.out.println("Invalid move");
 			return false;
 		} else {
-			movePawn(x1, y1, x2, y2);
 			return true;
-		}
+		}*/
+		return true;
 	}
 	
 	/**
@@ -210,10 +210,12 @@ class Game {
 					
 					/* Takes command "MOVE (x1) (y1) (x2) (y2) */
 					
-					x1 = Integer.parseInt(command.substring(6, 6));
-					y1 = Integer.parseInt(command.substring(7, 7));
-					x2 = Integer.parseInt(command.substring(8, 8));
-					y2 = Integer.parseInt(command.substring(9, 9));
+					String[] words = command.split(" ");
+					
+					x1 = Integer.parseInt(words[1]);
+					y1 = Integer.parseInt(words[2]);
+					x2 = Integer.parseInt(words[3]);
+					y2 = Integer.parseInt(words[4]);
 					
 					
 					processMoveCommand(x1, y1, x2, y2);
@@ -224,9 +226,10 @@ class Game {
 		/* Command process */
 		private void processMoveCommand(int x1, int y1, int x2, int y2) {
 			
-				if(move(x1, y1, x2, y2, this)) {
+				if(moveLegal(x1, y1, x2, y2, this)) {
 					
 					movePawn(x1, y1, x2, y2);
+					System.out.println("Processed move " + x1 + " " + y1 + " " + x2 + " " + y2);
 				
 					/* Sends command OPPONENT_MOVED (playerNumber) (x1)(y1)(x2)(y2) */
 					sendToAll("MOVE" + " " + x1 + " " + y1 + " " + x2 + " " + y2);
@@ -239,12 +242,15 @@ class Game {
 				}
 				
 				currentPlayer = currentPlayer.nextPlayer;
-			}
+			} else {
+					sendToAll("COLOR " + currentPlayer.getColor().toString());
+				}
 		}
 		
 		private void sendToAll(String message) {
 			for(Player p : players) {
 				p.output.println(message);
+				System.out.println("Sent: " + message);
 			}
 		}
 	}

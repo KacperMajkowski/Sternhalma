@@ -22,12 +22,22 @@ public enum PlayerColors {
     {
         return vals[(this.ordinal()+1) % vals.length];
     }
-    public PlayerColors cos() {
-        if (this.color.equals(Color.RED)) {
-            return PlayerColors.GREEN;
+    public PlayerColors nextPlayer(int playersNumber) {
+        if(playersNumber == 2) {
+            return next().next().next();
+        }
+        else if(playersNumber == 3) {
+            return next().next();
+        }
+        else if(playersNumber == 4) {
+            if(this == PlayerColors.RED || this == PlayerColors.GREEN) {
+                return next();
+            } else {
+                return next().next();
+            }
         }
         else {
-            return PlayerColors.RED;
+            return next();
         }
     }
 }

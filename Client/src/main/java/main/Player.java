@@ -10,6 +10,7 @@ public class Player
     private CommunicationManager communicationManager;
     private Color playerColor;
     private Color currentPlayerColor = Color.RED;
+    private int waitForMoveResponse = 0;
 
     public void setCurrentPlayerColor(Color currentPlayerColor) {
         this.currentPlayerColor = currentPlayerColor;
@@ -50,7 +51,8 @@ public class Player
      */
     public void waitForServerResponse()
     {
-        while(!playersTurn()) {
+        while (!playersTurn() || waitForMoveResponse>0) {
+            waitForMoveResponse--;
             String response = null;
             try {
                 response = communicationManager.readLine();
@@ -60,20 +62,13 @@ public class Player
             if (response != null) {
                 String[] words = response.split(" ");
                 if(words[0].equals("MOVE")) {
-                    System.out.println("Words: " + response);
                     board.makeMove(currentPlayerColor, Integer.parseInt(words[1]), Integer.parseInt(words[2]), Integer.parseInt(words[3]), Integer.parseInt(words[4]));
                 } else if(words[0].equals("COLOR")) {
-        
-                    System.out.println("Words: " + response);
-                    System.out.println("Words[1]: " + words[1]);
-                    System.out.println(Color.valueOf(words[1]));
-                    Color color = Color.valueOf(words[1]);
+                    Color color = Color.web(words[1]);
                     setCurrentPlayerColor(color);
                     }
                 }
             }
-        
-        
     }
 
     /**
@@ -93,8 +88,9 @@ public class Player
             }
             else {
                 communicationManager.writeLine("MOVE "+selectedField.getX()+" "+selectedField.getY()+" "+clickedField.getX()+" "+clickedField.getY());
-                currentPlayerColor = Color.WHITE;
-                waitForServerResponse();
+                waitForMoveResponse = 2;
+                Thread thread = new Thread(this::waitForServerResponse);
+                thread.start();
             }
         }
     }

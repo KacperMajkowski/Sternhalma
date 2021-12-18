@@ -232,7 +232,8 @@ class Game {
 				
 					/* Sends command OPPONENT_MOVED (playerNumber) (x1)(y1)(x2)(y2) */
 					sendToAll("MOVE" + " " + x1 + " " + y1 + " " + x2 + " " + y2);
-					sendToAll("COLOR " + currentPlayer.getColor().next().color);
+					//sendToAll("COLOR " + currentPlayer.getColor().next().color);
+					sendToAll("COLOR " + currentPlayer.getColor().cos().color);
 				
 				if (hasWinner()) {
 					
@@ -242,7 +243,8 @@ class Game {
 				}
 				
 				currentPlayer = currentPlayer.nextPlayer;
-			} else {
+				}
+				else {
 					sendToAll("COLOR " + currentPlayer.getColor().toString());
 				}
 		}

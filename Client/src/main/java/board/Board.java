@@ -64,8 +64,10 @@ public class Board {
      * @param y2 y coordinate of where the piece has been moved.
      */
     public void makeMove(Color color, int x1, int y1 , int x2, int y2) {
-        addPiece(color,x1, y1);
-        removePiece(x2,y2);
+
+        deselectAllFields();
+        addPiece(color,x2, y2);
+        removePiece(x1,y1);
     }
 
     /**

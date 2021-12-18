@@ -70,8 +70,10 @@ public class Client {
      * Setting label to show current player's color.
      */
     private void setCurrentTurn() {
-        Color color = player.getCurrentPlayerColor();
-        currentColorLabel.setBackground(new Background(new BackgroundFill(color, CornerRadii.EMPTY, Insets.EMPTY)));
+        while (true) {
+            Color color = player.getCurrentPlayerColor();
+            currentColorLabel.setBackground(new Background(new BackgroundFill(color, CornerRadii.EMPTY, Insets.EMPTY)));
+        }
     }
 
     /**
@@ -94,13 +96,7 @@ public class Client {
     @FXML
     private void initialize() {
 
-        Thread turn = new Thread() {
-            public void run() {
-                while (true) {
-                    setCurrentTurn();
-                }
-            }
-        };
+        Thread turn = new Thread(this::setCurrentTurn);
 
         newConnection();
         assignFields();

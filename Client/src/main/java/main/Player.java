@@ -4,6 +4,8 @@ import board.Board;
 import board.Field;
 import javafx.scene.paint.Color;
 
+import java.util.Objects;
+
 public class Player
 {
     private Board board;
@@ -86,7 +88,7 @@ public class Player
                     board.selectField(clickedField);
                 }
             }
-            else {
+            else if(!Objects.equals(clickedField.getColor(), playerColor)){
                 communicationManager.writeLine("MOVE "+selectedField.getX()+" "+selectedField.getY()+" "+clickedField.getX()+" "+clickedField.getY());
                 waitForMoveResponse = 2;
                 Thread thread = new Thread(this::waitForServerResponse);

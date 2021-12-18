@@ -94,12 +94,6 @@ class Game {
 		return false;
 	}
 	
-	/* Check if the move is valid */
-	public boolean checkIfMoveValid(int x1, int y1, int x2, int y2) {
-		//TODO Check if move valid
-		return true;
-	}
-	
 	/* Move the pawn */
 	public void movePawn(int x1, int y1, int x2, int y2){
 		board.setColor(y1, x1, Color.WHITE);
@@ -118,22 +112,20 @@ class Game {
 	public synchronized boolean moveLegal(int x1, int y1, int x2, int y2, Player player) {
 		System.out.println("Recieved move " + x1 + " " + y1 + " " + x2 + " " + y2);
 		
-		/*if (player != currentPlayer) {
-			currentPlayer.output.println("Not your turn");
-			System.out.println("Not your turn");
-			return false;
-		} else if (player.nextPlayer == null) {
-			currentPlayer.output.println("No opponent");
-			System.out.println("No opponent");
-			return false;
-		} else if (!checkIfMoveValid(x1, y1, x2, y2)) {
-			currentPlayer.output.println("Invalid move");
-			System.out.println("Invalid move");
-			return false;
+		if(y1 % 2 == 0) {
+			if((y2 == y1-1 && ((x2 == x1) || (x2 == x1-1))) ||
+					(y2 == y1 && ((x2 == x1-1) || (x2 == x1+1))) ||
+					(y2 == y1+1 && ((x2 == x1) || (x2 == x1-1)))){
+				return true;
+			}
 		} else {
-			return true;
-		}*/
-		return true;
+			if((y2 == y1-1 && ((x2 == x1) || (x2 == x1+1))) ||
+					(y2 == y1 && ((x2 == x1-1) || (x2 == x1+1))) ||
+					(y2 == y1+1 && ((x2 == x1) || (x2 == x1+1)))){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**

@@ -35,7 +35,7 @@ class Game {
 		}
 
 		setPlayersColors();
-		board.setupBoard();
+		board.setupBoard(playersNumber);
 
 		/* Send START message to all players and start their threads */
 		var pool = Executors.newFixedThreadPool(200);

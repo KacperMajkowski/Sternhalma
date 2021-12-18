@@ -33,8 +33,6 @@ public class Server {
             communicationManager = new CommunicationManager(playerSockets.get(playersNumber));
             playersNumber++;
             communicationManager.writeLine(String.valueOf(playersNumber));
-            //communicationManager.writeLine(PlayerColors.RED.color.toString());
-            //communicationManager.writeLine(createBoardString(board));
             String read = communicationManager.readLine();
             if (read.equals("WAIT")) {
                 connectPlayer();

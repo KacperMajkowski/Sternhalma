@@ -18,14 +18,20 @@ public class Board {
         return selectedField;
     }
 
+    /**
+     * Selecting field.
+     * @param field
+     */
     public void selectField(Field field)
     {
-        System.out.println("3");
         deselectAllFields();
         selectedField = field;
         field.setSelected(true);
     }
 
+    /**
+     * Deselecting all fields.
+     */
     public void deselectAllFields()
     {
         selectedField = null;
@@ -33,6 +39,12 @@ public class Board {
             field.setSelected( false );
     }
 
+    /**
+     * Getting field by it's coordinates.
+     * @param x coordinate x.
+     * @param y coordinate y.
+     * @return
+     */
     private Field getField( int x, int y )
     {
         for( Field field : fieldList )
@@ -43,15 +55,34 @@ public class Board {
         return null;
     }
 
+    /**
+     * Making move on the board.
+     * @param color color of the moved piece.
+     * @param x1 x coordinate of the moved piece.
+     * @param y1 y coordinate of the moved piece.
+     * @param x2 x coordinate of where the piece has been moved.
+     * @param y2 y coordinate of where the piece has been moved.
+     */
     public void makeMove(Color color, int x1, int y1 , int x2, int y2) {
         addPiece(color,x1, y1);
         removePiece(x2,y2);
     }
 
+    /**
+     * Removing piece from field.
+     * @param x2 x coordinate of the removed piece.
+     * @param y2 y coordinate of the removed piece.
+     */
     private void removePiece(int x2, int y2) {
         getField(x2, y2).setColor(Color.WHITE);
     }
 
+    /**
+     * Adding piece to a field.
+     * @param color color of added piece.
+     * @param x1 x coordinate of the added piece.
+     * @param y1 y coordinate of the added piece.
+     */
     public void addPiece(Color color, int x1, int y1) {
         getField(x1,y1).setColor(color);
     }

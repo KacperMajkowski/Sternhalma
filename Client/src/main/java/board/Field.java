@@ -38,13 +38,18 @@ public class Field {
         circle.setFill(color);
     }
 
+    /**
+     * Changing strokeType so that the field looks like it's selected or not.
+     * @param isSelected is the field selected.
+     */
     public void setSelected(boolean isSelected) {
         StrokeType strokeType;
-        if( isSelected )
+        if( isSelected ) {
             strokeType = StrokeType.OUTSIDE;
-        else
+        }
+        else {
             strokeType = StrokeType.INSIDE;
-
+        }
         circle.setStrokeType( strokeType );
     }
 }

@@ -28,6 +28,9 @@ public class Player
 
     }
 
+    /**
+     * Adding pieces at the start of the game.
+     */
     private void addStartingPieces() {
         String boardString;
         try {
@@ -42,32 +45,37 @@ public class Player
         }
     }
 
+    /**
+     * Waiting for server responses and handling them.
+     */
     public void waitForServerResponse()
     {
-        System.out.println("5");
         while(!playersTurn()) {
-            System.out.println("6");
             String response = null;
             try {
                 response = communicationManager.readLine();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            String[] words = response.split(" ");
-            switch (words[0]) {
-                case "MOVE":
-                    board.makeMove(currentPlayerColor,Integer.parseInt(words[1]),Integer.parseInt(words[2]),Integer.parseInt(words[3]),Integer.parseInt(words[4]));
-                case "COLOR":
-                    Color color = Color.web(words[1]);
-                    setCurrentPlayerColor(color);
-                case "ADD":
-                    board.addPiece(Color.web(words[1]),Integer.parseInt(words[2]),Integer.parseInt(words[3]));
-                default:
+            if (response != null) {
+                String[] words = response.split(" ");
+                switch (words[0]) {
+                    case "MOVE":
+                        board.makeMove(currentPlayerColor,Integer.parseInt(words[1]),Integer.parseInt(words[2]),Integer.parseInt(words[3]),Integer.parseInt(words[4]));
+                    case "COLOR":
+                        Color color = Color.web(words[1]);
+                        setCurrentPlayerColor(color);
+                    default:
 
+                }
             }
         }
     }
 
+    /**
+     * Handling mouse clicked.
+     * @param clickedField
+     */
     public void handleMouseClicked(Field clickedField) {
         Field selectedField = board.getSelectedField();
         if (checkIfEventLegal(clickedField.getColor())){
@@ -75,19 +83,30 @@ public class Player
                 board.deselectAllFields();
             }
             else if (selectedField == null) {
-                board.selectField(clickedField);
+                if (clickedField.getColor().equals(playerColor)) {
+                    board.selectField(clickedField);
+                }
             }
             else {
                 communicationManager.writeLine("MOVE "+selectedField.getX()+" "+selectedField.getY()+" "+clickedField.getX()+" "+clickedField.getY());
+                currentPlayerColor = Color.WHITE;
+                waitForServerResponse();
             }
-            waitForServerResponse();
         }
     }
 
+    /**
+     * Checking if it's player's turn and field he clicked it's clickable.
+     * @param color
+     * @return
+     */
     public boolean checkIfEventLegal(Color color) {
-        return (color == playerColor && playersTurn());
+        return ((color.equals(playerColor) || color.equals(Color.WHITE)) && playersTurn());
     }
 
+    /**
+     * Checking if it's player's turn
+     */
     public boolean playersTurn() {
         return (playerColor.equals(currentPlayerColor));
     }

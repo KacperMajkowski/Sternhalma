@@ -217,7 +217,6 @@ class Game {
 					x2 = Integer.parseInt(words[3]);
 					y2 = Integer.parseInt(words[4]);
 					
-					
 					processMoveCommand(x1, y1, x2, y2);
 				}
 			}

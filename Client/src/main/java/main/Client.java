@@ -20,11 +20,19 @@ import java.util.Optional;
 
 public class Client {
 
-    /** Reference to the pane containing Circle objects */
+    /**
+     *  Reference to the pane containing Circle objects.
+     */
     @FXML
     private Pane boardPane;
+    /**
+     * Reference to label showing player's color.
+     */
     @FXML
     private Label playerColorLabel;
+    /**
+     * Reference to label showing current player's color.
+     */
     @FXML
     private Label currentColorLabel;
 
@@ -34,6 +42,9 @@ public class Client {
     private CommunicationManager communicationManager;
     private Color playerColor;
 
+    /**
+     * Handling clicks on circles.
+     */
     private EventHandler<? super MouseEvent> OnFieldClickedListener = new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent mouseEvent) {
@@ -43,21 +54,31 @@ public class Client {
         }
     };
 
+    /**
+     * Setting player color.
+     */
     private void setPlayerColor() {
         try {
             playerColor = Color.web(communicationManager.readLine());
-            System.out.println(playerColor.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
         playerColorLabel.setBackground(new Background(new BackgroundFill(playerColor, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
+    /**
+     * Setting label to show current player's color.
+     */
     private void setCurrentTurn() {
         Color color = player.getCurrentPlayerColor();
         currentColorLabel.setBackground(new Background(new BackgroundFill(color, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
+    /**
+     * Getting Field by Circle reference.
+     * @param circle
+     * @return
+     */
     private Field getFieldfromCircle(Circle circle) {
         for (Field f: fields){
             if (f.getCircle().equals(circle)) {
@@ -68,7 +89,7 @@ public class Client {
     }
 
     /**
-     * Function launched at the start od the application
+     * Function launched at the start od the application.
      */
     @FXML
     private void initialize() {
@@ -88,11 +109,19 @@ public class Client {
         player.waitForServerResponse();
     }
 
+    /**
+     * Creating player with board containing all fields.
+     */
     private void createPlayer() {
         board = new Board(fields);
         player = new Player(board, communicationManager, playerColor);
     }
 
+
+    /**
+     * Adding fields from board to list with correct coordinates.
+     * Attaching EventHandler.
+     */
     private void assignFields() {
         int x = 0;
         int y = 0;
@@ -115,7 +144,7 @@ public class Client {
     }
 
     /**
-     * Tworzenie nowego okna dialogowego na wpisanie parametrów połączenia
+     * Creating dialog through which user can connect.
      */
     public void newConnection()
     {
@@ -191,6 +220,12 @@ public class Client {
         }
     }
 
+    /**
+     * Connecting to server and creating dialog allowing user to start the game or wait for more players.
+     * @param host
+     * @param port
+     * @throws Exception
+     */
     private void connectToServer(String host, int port) throws Exception {
         communicationManager = new CommunicationManager(host, port);
         int playersNumber = Integer.parseInt(communicationManager.readLine());
@@ -231,6 +266,9 @@ public class Client {
         }
     }
 
+    /**
+     * Creating information for the user that he will be waiting for more players to connect.
+     */
     private void waitForPlayers() {
         Alert alert = new Alert( Alert.AlertType.INFORMATION);
         alert.setTitle("Waiting for more players");

@@ -232,9 +232,10 @@ class Game {
 				
 					/* Sends command OPPONENT_MOVED (playerNumber) (x1)(y1)(x2)(y2) */
 					sendToAll("MOVE" + " " + x1 + " " + y1 + " " + x2 + " " + y2);
-					sendToAll("COLOR " + currentPlayer.getColor().next().toString());
+					sendToAll("COLOR " + currentPlayer.getColor().next().color);
 				
 				if (hasWinner()) {
+					
 					sendToAll("WIN");
 				} else if (boardFilledUp()) {
 					sendToAll("TIE");

@@ -59,17 +59,21 @@ public class Player
             }
             if (response != null) {
                 String[] words = response.split(" ");
-                switch (words[0]) {
-                    case "MOVE":
-                        board.makeMove(currentPlayerColor,Integer.parseInt(words[1]),Integer.parseInt(words[2]),Integer.parseInt(words[3]),Integer.parseInt(words[4]));
-                    case "COLOR":
-                        Color color = Color.web(words[1]);
-                        setCurrentPlayerColor(color);
-                    default:
-
+                if(words[0].equals("MOVE")) {
+                    System.out.println("Words: " + response);
+                    board.makeMove(currentPlayerColor, Integer.parseInt(words[1]), Integer.parseInt(words[2]), Integer.parseInt(words[3]), Integer.parseInt(words[4]));
+                } else if(words[0].equals("COLOR")) {
+        
+                    System.out.println("Words: " + response);
+                    System.out.println("Words[1]: " + words[1]);
+                    System.out.println(Color.valueOf(words[1]));
+                    Color color = Color.valueOf(words[1]);
+                    setCurrentPlayerColor(color);
+                    }
                 }
             }
-        }
+        
+        
     }
 
     /**

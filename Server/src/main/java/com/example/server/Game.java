@@ -115,7 +115,7 @@ class Game {
 	* If can - move, return true
 	* If not - throw exception, return false
 	* */
-	public synchronized boolean moveLegal(int x1, int y1, int x2, int y2) {
+	public synchronized boolean moveLegal(int x1, int y1, int x2, int y2 ,boolean afterJump) {
 		System.out.println("Received move " + x1 + " " + y1 + " " + x2 + " " + y2);
 		
 		return (oneSpotMove(x1, y1, x2, y2) || jumpMove(x1 ,y1, x2, y2)) && stayInTriangle(x1, y1, x2, y2);
@@ -247,6 +247,7 @@ class Game {
 					if(Objects.equals(words[1], currentPlayer.getColor().color.toString())) {
 						mb.clear();
 						sendToAll(mb.add("COLOR").add(currentPlayer.nextPlayer.getColor().color).build());
+						afterJump = false;
 						currentPlayer = currentPlayer.nextPlayer;
 					} else {
 						mb.clear();
@@ -256,20 +257,33 @@ class Game {
 			}
 		}
 		
+		int jumpedToX;
+		int jumpedToY;
+		boolean afterJump;
+		
 		/* Command process */
 		private void processMoveCommand(int x1, int y1, int x2, int y2) {
 			
 			MessageBuilder mb = new MessageBuilder();
 			
-			if(moveLegal(x1, y1, x2, y2)) {
+			if(moveLegal(x1, y1, x2, y2, afterJump)) {
 				
 				movePawn(x1, y1, x2, y2);
 				
 				mb.clear();
-				sendToAll(mb.add("MOVE").add(x1).add(y1).add(x2).add(y2).build());
+				mb.add("MOVE").add(x1).add(y1).add(x2).add(y2);
+				sendToAll(mb.build());
 				
-				mb.clear();
-				sendToAll(mb.add("COLOR").add(currentPlayer.nextPlayer.getColor().color).build());
+				if(jumpMove(x1, y1, x2, y2)) {
+					mb.clear();
+					mb.add("COLOR").add(currentPlayer.getColor().color).add("ANOTHER");
+					sendToAll(mb.build());
+				} else {
+					mb.clear();
+					mb.add("COLOR").add(currentPlayer.nextPlayer.getColor().color);
+					sendToAll(mb.build());
+				}
+				
 				
 				mb.clear();
 				if (hasWinner()) {

@@ -46,7 +46,7 @@ public class Client {
     private Player player;
     private List<Field> fields = new ArrayList<>();
     private CommunicationManager communicationManager;
-    private Color playerColor;
+    private Color playerColor = null;
 
     /**
      * Handling clicks on circles.
@@ -105,8 +105,8 @@ public class Client {
         Thread turn = new Thread(this::setCurrentTurn);
 
         newConnection();
-        assignFields();
         createPlayer();
+        assignFields();
         turn.start();
         createButton();
         player.readServerMessages();
@@ -128,6 +128,7 @@ public class Client {
      * Creating player with board containing all fields.
      */
     private void createPlayer() {
+        setPlayerColor();
         board = new Board(fields);
         player = new Player(board, communicationManager, playerColor);
     }
@@ -265,7 +266,7 @@ public class Client {
                 }
                 else {
                     try {
-                        dialog.close();
+                        //dialog.close();
                         waitForPlayers();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -277,7 +278,6 @@ public class Client {
             Optional<String> result = dialog.showAndWait();
 
             result.ifPresent(s -> communicationManager.writeLine(s));
-            setPlayerColor();
         }
     }
 
@@ -290,7 +290,5 @@ public class Client {
         alert.setHeaderText("Please wait while other players are connecting");
         alert.getDialogPane().getScene().getWindow().setOnCloseRequest(Event::consume);
         alert.showAndWait();
-
-        setPlayerColor();
     }
 }

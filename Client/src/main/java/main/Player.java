@@ -63,15 +63,16 @@ public class Player
             }
             if (response != null) {
                 String[] words = response.split(" ");
-                if(words[0].equals("MOVE")) {
+                if (words[0].equals("MOVE")) {
                     board.makeMove(currentPlayerColor, Integer.parseInt(words[1]), Integer.parseInt(words[2]), Integer.parseInt(words[3]), Integer.parseInt(words[4]));
-                } else if(words[0].equals("COLOR")) {
+                }
+                else if (words[0].equals("COLOR")) {
                     waitForResponses = 0;
                     Color color = Color.web(words[1]);
                     setCurrentPlayerColor(color);
-                    }
                 }
             }
+        }
     }
 
     /**

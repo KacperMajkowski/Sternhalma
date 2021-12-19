@@ -35,6 +35,10 @@ public class MessageBuilder {
 		return this;
 	}
 	
+	public void clear() {
+		this.message = "";
+	}
+	
 	public String build() {
 		return message;
 	}

@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -84,14 +85,18 @@ class Game {
 
 	/* Check if game has a winner */
 	public boolean hasWinner() {
-		//TODO Check if winner
-		return false;
-	}
-	
-	/* Check if there are no legal moves */
-	public boolean boardFilledUp() {
-		//TODO No legal moves
-		return false;
+		
+		for(int r = 0; r < rows; r++) {
+			for (int c = 0; c < columns; c++) {
+				if(Objects.equals(board.getColor(r, c), currentPlayer.getColor().color)) {
+					if(!Objects.equals(board.getTriangle(r, c), currentPlayer.getColor().next().next().next().color)) {
+						return false;
+					}
+				}
+			}
+		}
+		
+		return true;
 	}
 	
 	/* Move the pawn */
@@ -110,7 +115,7 @@ class Game {
 	* If not - throw exception, return false
 	* */
 	public synchronized boolean moveLegal(int x1, int y1, int x2, int y2) {
-		System.out.println("Recieved move " + x1 + " " + y1 + " " + x2 + " " + y2);
+		System.out.println("Received move " + x1 + " " + y1 + " " + x2 + " " + y2);
 		
 		return (oneSpotMove(x1, y1, x2, y2) || jumpMove(x1 ,y1, x2, y2)) && stayInTriangle(x1, y1, x2, y2);
 	}
@@ -244,26 +249,29 @@ class Game {
 		/* Command process */
 		private void processMoveCommand(int x1, int y1, int x2, int y2) {
 			
-				if(moveLegal(x1, y1, x2, y2)) {
-					
-					movePawn(x1, y1, x2, y2);
-					
-					MessageBuilder mb = new MessageBuilder();
-					sendToAll(mb.add("MOVE").add(x1).add(y1).add(x2).add(y2).build());
-					
-					mb = new MessageBuilder();
-					sendToAll(mb.add("COLOR").add(currentPlayer.getColor().nextPlayer(playersNumber).color).build());
+			MessageBuilder mb = new MessageBuilder();
+			
+			if(moveLegal(x1, y1, x2, y2)) {
 				
+				movePawn(x1, y1, x2, y2);
+				
+				mb.clear();
+				sendToAll(mb.add("MOVE").add(x1).add(y1).add(x2).add(y2).build());
+				
+				mb.clear();
+				sendToAll(mb.add("COLOR").add(currentPlayer.getColor().nextPlayer(playersNumber).color).build());
+				
+				mb.clear();
 				if (hasWinner()) {
-					sendToAll("WIN");
-				} else if (boardFilledUp()) {
-					sendToAll("TIE");
+					System.out.println("WIN " + currentPlayer.getColor());
+					sendToAll(mb.add("WIN").add(currentPlayer.getColor().color).build());
 				}
 				
 				currentPlayer = currentPlayer.nextPlayer;
-				} else {
-					sendToAll("COLOR " + currentPlayer.getColor().toString());
-				}
+			} else {
+				mb.clear();
+				sendToAll(mb.add("COLOR").add(currentPlayer.getColor().color).build());
+			}
 		}
 		
 		private void sendToAll(String message) {

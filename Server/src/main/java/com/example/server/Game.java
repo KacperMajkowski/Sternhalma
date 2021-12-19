@@ -118,7 +118,11 @@ class Game {
 	public synchronized boolean moveLegal(int x1, int y1, int x2, int y2 ,boolean afterJump) {
 		System.out.println("Received move " + x1 + " " + y1 + " " + x2 + " " + y2);
 		
-		return (oneSpotMove(x1, y1, x2, y2) || jumpMove(x1 ,y1, x2, y2)) && stayInTriangle(x1, y1, x2, y2);
+		if(afterJump) {
+			return jumpMove(x1, y1, x2, y2) && stayInTriangle(x1, y1, x2, y2);
+		} else {
+			return (oneSpotMove(x1, y1, x2, y2) || jumpMove(x1 ,y1, x2, y2)) && stayInTriangle(x1, y1, x2, y2);
+		}
 	}
 	
 	public boolean oneSpotMove(int x1, int y1, int x2, int y2) {
@@ -257,8 +261,6 @@ class Game {
 			}
 		}
 		
-		int jumpedToX;
-		int jumpedToY;
 		boolean afterJump;
 		
 		/* Command process */
@@ -275,10 +277,12 @@ class Game {
 				sendToAll(mb.build());
 				
 				if(jumpMove(x1, y1, x2, y2)) {
+					afterJump = true;
 					mb.clear();
 					mb.add("COLOR").add(currentPlayer.getColor().color).add("ANOTHER");
 					sendToAll(mb.build());
 				} else {
+					afterJump = false;
 					mb.clear();
 					mb.add("COLOR").add(currentPlayer.nextPlayer.getColor().color);
 					sendToAll(mb.build());
@@ -291,10 +295,20 @@ class Game {
 					sendToAll(mb.add("WIN").add(currentPlayer.getColor().color).build());
 				}
 				
-				currentPlayer = currentPlayer.nextPlayer;
+				if(!afterJump) {
+					currentPlayer = currentPlayer.nextPlayer;
+				}
+				
+				
 			} else {
-				mb.clear();
-				sendToAll(mb.add("COLOR").add(currentPlayer.getColor().color).build());
+				if(afterJump) {
+					mb.clear();
+					sendToAll(mb.add("COLOR").add(currentPlayer.nextPlayer.getColor().color).build());
+					currentPlayer = currentPlayer.nextPlayer;
+				} else {
+					mb.clear();
+					sendToAll(mb.add("COLOR").add(currentPlayer.getColor().color).build());
+				}
 			}
 		}
 		

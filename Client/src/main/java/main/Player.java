@@ -61,6 +61,7 @@ public class Player
             String response = null;
             try {
                 response = communicationManager.readLine();
+                System.out.println("Received response: " + response);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -72,10 +73,14 @@ public class Player
                 else if (words[0].equals("COLOR")) {
                     waitForResponses = 0;
                     Color color = Color.web(words[1]);
+                    
                     if (color.equals(currentPlayerColor) && color.equals(playerColor)) {
+                        blockedSelecting = false;
                         if (words[2].equals("ANOTHER")) {
                             makeAnotherMove();
                         }
+                    } else {
+                        board.deselectAllFields();
                     }
                     setCurrentPlayerColor(color);
                 }

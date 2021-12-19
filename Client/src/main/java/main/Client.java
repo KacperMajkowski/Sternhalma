@@ -2,6 +2,7 @@ package main;
 
 import board.Board;
 import board.Field;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -35,6 +36,11 @@ public class Client {
      */
     @FXML
     private Label currentColorLabel;
+    /**
+     * Reference to button allowing player to skip turn.
+     */
+    @FXML
+    private Button skipButton;
 
     private Board board;
     private Player player;
@@ -102,7 +108,20 @@ public class Client {
         assignFields();
         createPlayer();
         turn.start();
-        player.waitForServerResponse();
+        createButton();
+        player.readServerMessages();
+    }
+
+    /**
+     * Adds event handling for skipButton.
+     */
+    private void createButton() {
+        skipButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                player.skipTurn();
+            }
+        });
     }
 
     /**
@@ -155,26 +174,26 @@ public class Client {
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
 
-        TextField ipAddressField = new TextField();
-        ipAddressField.setText( "localhost");
+        TextField ipField = new TextField();
+        ipField.setText( "localhost");
         TextField portField = new TextField();
         portField.setText("4444");
 
         grid.add(new Label("IP:"), 0, 0);
-        grid.add(ipAddressField, 1, 0);
+        grid.add(ipField, 1, 0);
         grid.add(new Label("Port:"), 0, 1);
         grid.add(portField, 1, 1);
         dialog.getDialogPane().setContent(grid);
 
         Node connectButton = dialog.getDialogPane().lookupButton(connectButtonType);
 
-        ipAddressField.textProperty().addListener(
+        ipField.textProperty().addListener(
                 (observable, oldValue, newValue) -> connectButton.setDisable(newValue.trim().isEmpty())
         );
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == connectButtonType) {
-                return new Pair<>(ipAddressField.getText(), portField.getText());
+                return new Pair<>(ipField.getText(), portField.getText());
             }
             else{
                 System.exit(0);

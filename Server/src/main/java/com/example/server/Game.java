@@ -101,7 +101,7 @@ class Game {
 	}
 	
 	/* Imo to że czerwony zawsze zaczyna jest ok */
-	 public void setFirstPlayer() {
+	private void setFirstPlayer() {
 		currentPlayer = players.get(0);
 	}
 	

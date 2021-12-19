@@ -251,15 +251,13 @@ class Game {
 					sendToAll(mb.add("COLOR").add(currentPlayer.getColor().nextPlayer(playersNumber).color).build());
 				
 				if (hasWinner()) {
-					
 					sendToAll("WIN");
 				} else if (boardFilledUp()) {
 					sendToAll("TIE");
 				}
 				
 				currentPlayer = currentPlayer.nextPlayer;
-				}
-				else {
+				} else {
 					sendToAll("COLOR " + currentPlayer.getColor().toString());
 				}
 		}

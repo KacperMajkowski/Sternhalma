@@ -89,7 +89,14 @@ public class Player
                 }
             }
             else if(!Objects.equals(clickedField.getColor(), playerColor)){
-                communicationManager.writeLine("MOVE "+selectedField.getX()+" "+selectedField.getY()+" "+clickedField.getX()+" "+clickedField.getY());
+                MessageBuilder mb = new MessageBuilder();
+                communicationManager.writeLine(
+                    mb.add("MOVE")
+                    .add(selectedField.getX())
+                    .add(selectedField.getY())
+                    .add(clickedField.getX())
+                    .add(clickedField.getY())
+                    .build());
                 waitForMoveResponse = 2;
                 Thread thread = new Thread(this::waitForServerResponse);
                 thread.start();

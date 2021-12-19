@@ -73,14 +73,15 @@ class Game {
 	}
 
 	public String createBoardString(Board board) {
-		String boardString = "";
 
+		MessageBuilder mb = new MessageBuilder();
 		for(int c = 0; c < columns; c++) {
 			for(int r = 0; r < rows; r++) {
-				boardString += board.getColor(r, c) + " " + r + " " + c + " ";
+				mb.add(board.getColor(r, c)).add(r).add(c);
 			}
 		}
-		return boardString;
+		System.out.println(mb.build());
+		return mb.build();
 	}
 
 	/* Check if game has a winner */
@@ -147,7 +148,7 @@ class Game {
 			}
 		} else {
 			if(((y2 == y1-2) && (((x2 == x1-1) && (board.getColor(y1-1, x1) != Color.WHITE)) || ((x2 == x1+1) && (board.getColor(y1-1, x1+1) != Color.WHITE)))) ||
-					((y2 == y1) && (((x2 == x1-2) && (board.getColor(y1,x1-1) != Color.WHITE)) || ((x2 == x1+2) && (board.getColor(y1, x1-1) != Color.WHITE)))) ||
+					((y2 == y1) && (((x2 == x1-2) && (board.getColor(y1,x1-1) != Color.WHITE)) || ((x2 == x1+2) && (board.getColor(y1, x1+1) != Color.WHITE)))) ||
 					((y2 == y1+2) && (((x2 == x1-1) && (board.getColor(y1+1,x1) != Color.WHITE)) || ((x2 == x1+1) && (board.getColor(y1+1, x1+1) != Color.WHITE))))) {
 				return true;
 			}

@@ -105,8 +105,8 @@ public class Client {
         Thread turn = new Thread(this::setCurrentTurn);
 
         newConnection();
-        createPlayer();
         assignFields();
+        createPlayer();
         turn.start();
         createButton();
         player.readServerMessages();

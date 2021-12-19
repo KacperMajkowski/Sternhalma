@@ -2,6 +2,7 @@ package main;
 
 import board.Board;
 import board.Field;
+import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 
 import java.util.Objects;
@@ -13,6 +14,8 @@ public class Player
     private Color playerColor;
     private Color currentPlayerColor = Color.RED;
     private int waitForResponses = 0;
+    private Field lastClickedField;
+    private boolean blockedSelecting;
 
     public void setCurrentPlayerColor(Color currentPlayerColor) {
         this.currentPlayerColor = currentPlayerColor;
@@ -69,9 +72,43 @@ public class Player
                 else if (words[0].equals("COLOR")) {
                     waitForResponses = 0;
                     Color color = Color.web(words[1]);
+                    if (color.equals(currentPlayerColor) && color.equals(playerColor)) {
+                        if (words[2].equals("ANOTHER")) {
+                            makeAnotherMove();
+                        }
+                    }
                     setCurrentPlayerColor(color);
                 }
+                else if (words[0].equals("WIN")) {
+                    winAlert(words[1]);
+                }
             }
+        }
+    }
+
+    private void makeAnotherMove() {
+        board.selectField(lastClickedField);
+        blockedSelecting = true;
+    }
+
+    /**
+     * Creating alert informing that one of the players have won.
+     * @param word winning player
+     */
+    private void winAlert(String word) {
+        Color c = Color.web(word);
+        if (c.equals(playerColor)) {
+            Alert alert = new Alert( Alert.AlertType.INFORMATION);
+            alert.setTitle("Win");
+            alert.setHeaderText("You have won!");
+            alert.show();
+            System.exit(0);
+        }
+        else {
+            Alert alert = new Alert( Alert.AlertType.INFORMATION);
+            alert.setTitle("Win");
+            alert.setHeaderText("Player "+currentPlayerColor+" have won");
+            alert.show();
         }
     }
 
@@ -80,9 +117,10 @@ public class Player
      * @param clickedField
      */
     public void handleMouseClicked(Field clickedField) {
+        lastClickedField = clickedField;
         Field selectedField = board.getSelectedField();
         if (checkIfEventLegal(clickedField.getColor())){
-            if (selectedField == clickedField) {
+            if (selectedField == clickedField && !blockedSelecting) {
                 board.deselectAllFields();
             }
             else if (selectedField == null) {

@@ -109,9 +109,13 @@ class Game {
 	* If can - move, return true
 	* If not - throw exception, return false
 	* */
-	public synchronized boolean moveLegal(int x1, int y1, int x2, int y2, Player player) {
+	public synchronized boolean moveLegal(int x1, int y1, int x2, int y2) {
 		System.out.println("Recieved move " + x1 + " " + y1 + " " + x2 + " " + y2);
 		
+		return oneSpotMove(x1, y1, x2, y2) || jumpMove(x1 ,y1, x2, y2);
+	}
+	
+	public boolean oneSpotMove(int x1, int y1, int x2, int y2) {
 		if(y1 % 2 == 0) {
 			if((y2 == y1-1 && ((x2 == x1) || (x2 == x1-1))) ||
 					(y2 == y1 && ((x2 == x1-1) || (x2 == x1+1))) ||
@@ -125,6 +129,25 @@ class Game {
 				return true;
 			}
 		}
+		
+		return false;
+	}
+	
+	public boolean jumpMove(int x1, int y1, int x2, int y2) {
+		if(y1 % 2 == 0) {
+			if((y2 == y1-1 && ((x2 == x1) || (x2 == x1-1))) ||
+					(y2 == y1 && ((x2 == x1-1) || (x2 == x1+1))) ||
+					(y2 == y1+1 && ((x2 == x1) || (x2 == x1-1)))){
+				return true;
+			}
+		} else {
+			if((y2 == y1-1 && ((x2 == x1) || (x2 == x1+1))) ||
+					(y2 == y1 && ((x2 == x1-1) || (x2 == x1+1))) ||
+					(y2 == y1+1 && ((x2 == x1) || (x2 == x1+1)))){
+				return true;
+			}
+		}
+		
 		return false;
 	}
 	
@@ -217,15 +240,15 @@ class Game {
 		/* Command process */
 		private void processMoveCommand(int x1, int y1, int x2, int y2) {
 			
-				if(moveLegal(x1, y1, x2, y2, this)) {
+				if(moveLegal(x1, y1, x2, y2)) {
 					
 					movePawn(x1, y1, x2, y2);
-					System.out.println("Processed move " + x1 + " " + y1 + " " + x2 + " " + y2);
-				
-					/* Sends command OPPONENT_MOVED (playerNumber) (x1)(y1)(x2)(y2) */
-					sendToAll("MOVE" + " " + x1 + " " + y1 + " " + x2 + " " + y2);
-					//sendToAll("COLOR " + currentPlayer.getColor().next().color);
-					sendToAll("COLOR " + currentPlayer.getColor().nextPlayer(playersNumber).color);
+					
+					MessageBuilder mb = new MessageBuilder();
+					sendToAll(mb.add("MOVE").add(x1).add(y1).add(x2).add(y2).build());
+					
+					mb = new MessageBuilder();
+					sendToAll(mb.add("COLOR").add(currentPlayer.getColor().nextPlayer(playersNumber).color).build());
 				
 				if (hasWinner()) {
 					

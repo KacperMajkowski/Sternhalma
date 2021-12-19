@@ -12,7 +12,7 @@ public class Player
     private CommunicationManager communicationManager;
     private Color playerColor;
     private Color currentPlayerColor = Color.RED;
-    private int waitForMoveResponse = 0;
+    private int waitForResponses = 0;
 
     public void setCurrentPlayerColor(Color currentPlayerColor) {
         this.currentPlayerColor = currentPlayerColor;
@@ -51,10 +51,10 @@ public class Player
     /**
      * Waiting for server responses and handling them.
      */
-    public void waitForServerResponse()
+    public void readServerMessages()
     {
-        while (!playersTurn() || waitForMoveResponse>0) {
-            waitForMoveResponse--;
+        while (!playersTurn() || waitForResponses >0) {
+            waitForResponses--;
             String response = null;
             try {
                 response = communicationManager.readLine();
@@ -66,6 +66,7 @@ public class Player
                 if(words[0].equals("MOVE")) {
                     board.makeMove(currentPlayerColor, Integer.parseInt(words[1]), Integer.parseInt(words[2]), Integer.parseInt(words[3]), Integer.parseInt(words[4]));
                 } else if(words[0].equals("COLOR")) {
+                    waitForResponses = 0;
                     Color color = Color.web(words[1]);
                     setCurrentPlayerColor(color);
                     }
@@ -97,8 +98,8 @@ public class Player
                     .add(clickedField.getX())
                     .add(clickedField.getY())
                     .build());
-                waitForMoveResponse = 2;
-                Thread thread = new Thread(this::waitForServerResponse);
+                waitForResponses = 2;
+                Thread thread = new Thread(this::readServerMessages);
                 thread.start();
             }
         }
@@ -118,5 +119,14 @@ public class Player
      */
     public boolean playersTurn() {
         return (playerColor.equals(currentPlayerColor));
+    }
+
+    /**
+     * Send message to server that you want to skip turn.
+     */
+    public void skipTurn() {
+        communicationManager.writeLine(new MessageBuilder().add("SKIP").build());
+        waitForResponses = 1;
+        readServerMessages();
     }
 }

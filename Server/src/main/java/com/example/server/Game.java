@@ -304,6 +304,7 @@ class Game {
 				if(afterJump) {
 					mb.clear();
 					sendToAll(mb.add("COLOR").add(currentPlayer.nextPlayer.getColor().color).build());
+					afterJump = false;
 					currentPlayer = currentPlayer.nextPlayer;
 				} else {
 					mb.clear();

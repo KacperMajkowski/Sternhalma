@@ -22,6 +22,7 @@ public enum PlayerColors {
     {
         return vals[(this.ordinal()+1) % vals.length];
     }
+    
     public PlayerColors nextPlayer(int playersNumber) {
         if(playersNumber == 2) {
             return next().next().next();

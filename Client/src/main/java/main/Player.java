@@ -125,7 +125,7 @@ public class Player
      * Send message to server that you want to skip turn.
      */
     public void skipTurn() {
-        communicationManager.writeLine(new MessageBuilder().add("SKIP").build());
+        communicationManager.writeLine(new MessageBuilder().add("SKIP").add(playerColor).build());
         waitForResponses = 1;
         readServerMessages();
     }

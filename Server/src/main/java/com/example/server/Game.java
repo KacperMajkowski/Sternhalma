@@ -228,13 +228,13 @@ class Game {
 			while (input.hasNextLine()) {
 				/* Client commands */
 				String command = input.nextLine();
+				String[] words = command.split(" ");
+				MessageBuilder mb = new MessageBuilder();
 				if (command.startsWith("QUIT")) {
 					return;
 				} else if (command.startsWith("MOVE")) {
 					
 					/* Takes command "MOVE (x1) (y1) (x2) (y2) */
-					
-					String[] words = command.split(" ");
 					
 					x1 = Integer.parseInt(words[1]);
 					y1 = Integer.parseInt(words[2]);
@@ -242,6 +242,15 @@ class Game {
 					y2 = Integer.parseInt(words[4]);
 					
 					processMoveCommand(x1, y1, x2, y2);
+				} else if(command.startsWith("SKIP")) {
+					if(Objects.equals(words[1], currentPlayer.getColor().color.toString())) {
+						mb.clear();
+						sendToAll(mb.add("COLOR").add(currentPlayer.nextPlayer.getColor().color).build());
+						currentPlayer = currentPlayer.nextPlayer;
+					} else {
+						mb.clear();
+						sendToAll(mb.add("COLOR").add(currentPlayer.getColor().color).build());
+					}
 				}
 			}
 		}
@@ -259,7 +268,7 @@ class Game {
 				sendToAll(mb.add("MOVE").add(x1).add(y1).add(x2).add(y2).build());
 				
 				mb.clear();
-				sendToAll(mb.add("COLOR").add(currentPlayer.getColor().nextPlayer(playersNumber).color).build());
+				sendToAll(mb.add("COLOR").add(currentPlayer.nextPlayer.getColor().color).build());
 				
 				mb.clear();
 				if (hasWinner()) {
@@ -277,8 +286,8 @@ class Game {
 		private void sendToAll(String message) {
 			for(Player p : players) {
 				p.output.println(message);
-				System.out.println("Sent: " + message);
 			}
+			System.out.println("Sent: " + message);
 		}
 	}
 }

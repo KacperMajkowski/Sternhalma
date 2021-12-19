@@ -30,6 +30,90 @@ public class Board {
 		board[row][column] = color;
 	}
 	
+	Color getTriangle(int r, int c) {
+		
+		if((r == 0 && c == 6) ||
+				(r == 1 && c == 5) ||
+				(r == 1 && c == 6) ||
+				(r == 2 && c == 5) ||
+				(r == 2 && c == 6) ||
+				(r == 2 && c == 7) ||
+				(r == 3 && c == 4) ||
+				(r == 3 && c == 5) ||
+				(r == 3 && c == 6) ||
+				(r == 3 && c == 7)) {
+			return PlayerColors.GREEN.color;
+		}
+		
+		if ((r == 4 && c == 9) ||
+				(r == 4 && c == 10) ||
+				(r == 4 && c == 11) ||
+				(r == 4 && c == 12) ||
+				(r == 5 && c == 9) ||
+				(r == 5 && c == 10) ||
+				(r == 5 && c == 11) ||
+				(r == 6 && c == 10) ||
+				(r == 6 && c == 11) ||
+				(r == 7 && c == 10)) {
+			return PlayerColors.YELLOW.color;
+		}
+		
+		if((r == 9 && c == 10) ||
+				(r == 10 && c == 10) ||
+				(r == 10 && c == 11) ||
+				(r == 11 && c == 9) ||
+				(r == 11 && c == 10) ||
+				(r == 11 && c == 11) ||
+				(r == 12 && c == 9) ||
+				(r == 12 && c == 10) ||
+				(r == 12 && c == 11) ||
+				(r == 12 && c == 12)) {
+			return PlayerColors.ORANGE.color;
+		}
+		
+		if((r == 13 && c == 4) ||
+				(r == 13 && c == 5) ||
+				(r == 13 && c == 6) ||
+				(r == 13 && c == 7) ||
+				(r == 14 && c == 5) ||
+				(r == 14 && c == 6) ||
+				(r == 14 && c == 7) ||
+				(r == 15 && c == 5) ||
+				(r == 15 && c == 6) ||
+				(r == 16 && c == 6)) {
+			return PlayerColors.RED.color;
+		}
+		
+		if((r == 9 && c == 1) ||
+				(r == 10 && c == 1) ||
+				(r == 10 && c == 2) ||
+				(r == 11 && c == 0) ||
+				(r == 11 && c == 1) ||
+				(r == 11 && c == 2) ||
+				(r == 12 && c == 0) ||
+				(r == 12 && c == 1) ||
+				(r == 12 && c == 2) ||
+				(r == 12 && c == 3)) {
+			return PlayerColors.PURPLE.color;
+		}
+			
+			if((r == 4 && c == 0) ||
+					(r == 4 && c == 1) ||
+					(r == 4 && c == 2) ||
+					(r == 4 && c == 3) ||
+					(r == 5 && c == 0) ||
+					(r == 5 && c == 1) ||
+					(r == 5 && c == 2) ||
+					(r == 6 && c == 1) ||
+					(r == 6 && c == 2) ||
+					(r == 7 && c == 1)) {
+				return PlayerColors.BLUE.color;
+			}
+		
+		
+		return Color.WHITE;
+	}
+	
 	void setupBoard(int playersNumber) {
 		
 		for(int c = 0; c < columns; c++) {

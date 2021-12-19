@@ -112,7 +112,7 @@ class Game {
 	public synchronized boolean moveLegal(int x1, int y1, int x2, int y2) {
 		System.out.println("Recieved move " + x1 + " " + y1 + " " + x2 + " " + y2);
 		
-		return oneSpotMove(x1, y1, x2, y2) || jumpMove(x1 ,y1, x2, y2);
+		return (oneSpotMove(x1, y1, x2, y2) || jumpMove(x1 ,y1, x2, y2)) && stayInTriangle(x1, y1, x2, y2);
 	}
 	
 	public boolean oneSpotMove(int x1, int y1, int x2, int y2) {
@@ -151,11 +151,15 @@ class Game {
 		return false;
 	}
 	
-	/**
-	 * A Player is identified by a number from 1 to 6. For
-	 * communication with the client the player has a socket and associated Scanner
-	 * and PrintWriter.
-	 */
+	public boolean stayInTriangle(int x1, int y1, int x2, int y2) {
+		
+		if((board.getTriangle(y1, x1) == currentPlayer.getColor().next().next().next().color)
+			&& (board.getTriangle(y2, x2) != currentPlayer.getColor().next().next().next().color)) {
+				return false;
+		}
+		return true;
+	}
+	
 	class Player implements Runnable {
 		
 		int thisPlayerNumber;
@@ -198,8 +202,8 @@ class Game {
 			}
 		}
 		
+		/* Game start */
 		private void setup() {
-			/* Game start */
 			
 			/* Set up next player for each player */
 			for(Player p : players) {

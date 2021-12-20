@@ -15,8 +15,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.Pair;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class Client {
@@ -45,18 +50,19 @@ public class Client {
     private Board board;
     private Player player;
     private List<Field> fields = new ArrayList<>();
-    private CommunicationManager communicationManager;
     private Color playerColor = null;
+    private BufferedReader in;
+    private PrintWriter out;
 
     /**
      * Handling clicks on circles.
      */
-    private EventHandler<? super MouseEvent> OnFieldClickedListener = new EventHandler<MouseEvent>() {
+    private EventHandler<? super MouseEvent> OnFieldClickedListener = new EventHandler<>() {
         @Override
         public void handle(MouseEvent mouseEvent) {
             Circle circle = (Circle) mouseEvent.getSource();
             Field clickedField = getFieldfromCircle(circle);
-            player.handleMouseClicked(clickedField);
+            player.handleMouseClicked(Objects.requireNonNull(clickedField));
         }
     };
 
@@ -65,7 +71,7 @@ public class Client {
      */
     private void setPlayerColor() {
         try {
-            playerColor = Color.web(communicationManager.readLine());
+            playerColor = Color.web(in.readLine());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -84,8 +90,8 @@ public class Client {
 
     /**
      * Getting Field by Circle reference.
-     * @param circle
-     * @return
+     * @param circle Circle from which we take field
+     * @return Field.
      */
     private Field getFieldfromCircle(Circle circle) {
         for (Field f: fields){
@@ -116,12 +122,9 @@ public class Client {
      * Adds event handling for skipButton.
      */
     private void createButton() {
-        skipButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                board.deselectAllFields();
-                player.skipTurn();
-            }
+        skipButton.setOnAction(actionEvent -> {
+            board.deselectAllFields();
+            player.skipTurn();
         });
     }
 
@@ -131,7 +134,7 @@ public class Client {
     private void createPlayer() {
         setPlayerColor();
         board = new Board(fields);
-        player = new Player(board, communicationManager, playerColor);
+        player = new Player(board, out, in, playerColor);
     }
 
 
@@ -239,15 +242,17 @@ public class Client {
 
     /**
      * Connecting to server and creating dialog allowing user to start the game or wait for more players.
-     * @param host
-     * @param port
-     * @throws Exception
+     * @param host host
+     * @param port port
+     * @throws Exception Unable to connect to server
      */
     private void connectToServer(String host, int port) throws Exception {
-        communicationManager = new CommunicationManager(host, port);
-        int playersNumber = Integer.parseInt(communicationManager.readLine());
+        Socket socket = new Socket( host, port );
+        out = new PrintWriter( socket.getOutputStream(), true );
+        in = new BufferedReader( new InputStreamReader( socket.getInputStream() ) );
+        int playersNumber = Integer.parseInt(in.readLine());
         if (playersNumber < 2) {
-            communicationManager.writeLine("WAIT");
+            out.println("WAIT");
             waitForPlayers();
         }
         else {
@@ -267,7 +272,6 @@ public class Client {
                 }
                 else {
                     try {
-                        //dialog.close();
                         waitForPlayers();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -278,7 +282,7 @@ public class Client {
 
             Optional<String> result = dialog.showAndWait();
 
-            result.ifPresent(s -> communicationManager.writeLine(s));
+            result.ifPresent(s -> out.println(s));
         }
     }
 

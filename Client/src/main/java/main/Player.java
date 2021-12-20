@@ -5,17 +5,29 @@ import board.Field;
 import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 
+import java.io.BufferedReader;
+import java.io.PrintWriter;
 import java.util.Objects;
 
 public class Player
 {
     private Board board;
-    private CommunicationManager communicationManager;
     private Color playerColor;
+    private BufferedReader in;
+    private PrintWriter out;
     private Color currentPlayerColor = Color.RED;
     private int waitForResponses = 0;
     private Field lastClickedField;
     private boolean blockedSelecting;
+
+    public Player(Board board, PrintWriter out, BufferedReader in, Color playerColor) {
+        this.board = board;
+        this.out = out;
+        this.in = in;
+        this.playerColor = playerColor;
+
+        addStartingPieces();
+    }
 
     public void setCurrentPlayerColor(Color currentPlayerColor) {
         this.currentPlayerColor = currentPlayerColor;
@@ -25,22 +37,13 @@ public class Player
         return currentPlayerColor;
     }
 
-    public Player(Board board, CommunicationManager communicationManager, Color playerColor) {
-        this.board = board;
-        this.communicationManager = communicationManager;
-        this.playerColor = playerColor;
-
-        addStartingPieces();
-
-    }
-
     /**
      * Adding pieces at the start of the game.
      */
     private void addStartingPieces() {
         String boardString;
         try {
-            boardString = communicationManager.readLine();
+            boardString = in.readLine();
             String[] words = boardString.split(" ");
 
             for(int i = 0; i < words.length; i+=3) {
@@ -60,7 +63,7 @@ public class Player
             waitForResponses--;
             String response = null;
             try {
-                response = communicationManager.readLine();
+                response = in.readLine();
                 System.out.println("Received response: " + response);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -91,8 +94,13 @@ public class Player
         }
     }
 
+    /**
+     * After jump select piece player jumped with and block selecting others.
+     */
     private void makeAnotherMove() {
-        board.selectField(lastClickedField);
+        if (lastClickedField.getColor().equals(playerColor)) {
+            board.selectField(lastClickedField);
+        }
         blockedSelecting = true;
     }
 
@@ -119,7 +127,7 @@ public class Player
 
     /**
      * Handling mouse clicked.
-     * @param clickedField
+     * @param clickedField Clicked field
      */
     public void handleMouseClicked(Field clickedField) {
         lastClickedField = clickedField;
@@ -135,7 +143,7 @@ public class Player
             }
             else if(!Objects.equals(clickedField.getColor(), playerColor)){
                 MessageBuilder mb = new MessageBuilder();
-                communicationManager.writeLine(
+                out.println(
                     mb.add("MOVE")
                     .add(selectedField.getX())
                     .add(selectedField.getY())
@@ -151,8 +159,8 @@ public class Player
 
     /**
      * Checking if it's player's turn and field he clicked it's clickable.
-     * @param color
-     * @return
+     * @param color Clicked field color
+     * @return True if event is legal. False otherwise.
      */
     public boolean checkIfEventLegal(Color color) {
         return ((color.equals(playerColor) || color.equals(Color.WHITE)) && playersTurn());
@@ -169,8 +177,9 @@ public class Player
      * Send message to server that you want to skip turn.
      */
     public void skipTurn() {
-        communicationManager.writeLine(new MessageBuilder().add("SKIP").build());
+        out.println(new MessageBuilder().add("SKIP").build());
         waitForResponses = 1;
-        readServerMessages();
+        Thread thread = new Thread(this::readServerMessages);
+        thread.start();
     }
 }

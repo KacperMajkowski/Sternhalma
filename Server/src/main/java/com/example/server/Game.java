@@ -179,6 +179,8 @@ class Game {
 		PrintWriter output;
 		PlayerColors color;
 		
+		boolean afterJump;
+		
 		public PlayerColors getColor() {
 			return color;
 		}
@@ -251,12 +253,13 @@ class Game {
 						mb.clear();
 						sendToAll(mb.add("COLOR").add(currentPlayer.nextPlayer.getColor().color).build());
 						afterJump = false;
+						System.out.println("Set aj to false");
 						currentPlayer = currentPlayer.nextPlayer;
 				}
 			}
 		}
 		
-		boolean afterJump;
+		
 		
 		/* Command process */
 		private void processMoveCommand(int x1, int y1, int x2, int y2) {
@@ -273,11 +276,13 @@ class Game {
 				
 				if(jumpMove(x1, y1, x2, y2)) {
 					afterJump = true;
+					System.out.println("Set aj to true");
 					mb.clear();
 					mb.add("COLOR").add(currentPlayer.getColor().color).add("ANOTHER");
 					sendToAll(mb.build());
 				} else {
 					afterJump = false;
+					System.out.println("Set aj to false");
 					mb.clear();
 					mb.add("COLOR").add(currentPlayer.nextPlayer.getColor().color);
 					sendToAll(mb.build());

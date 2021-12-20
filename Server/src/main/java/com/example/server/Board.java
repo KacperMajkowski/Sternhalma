@@ -4,14 +4,7 @@ import javafx.scene.paint.Color;
 
 public class Board {
 	
-	public int getRows() {
-		return rows;
-	}
-	
-	public int getColumns() {
-		return columns;
-	}
-	
+	/* Amount of Boards rows and columns */
 	int rows;
 	int columns;
 	Color[][] board;
@@ -22,14 +15,17 @@ public class Board {
 		board = new Color[rows][columns];
 	}
 	
+	/* Returns color at given row and column */
 	Color getColor(int row, int column) {
 		return board[row][column];
 	}
 	
+	/* Sets given color at given row and column */
 	void setColor(int row, int column, Color color) {
 		board[row][column] = color;
 	}
 	
+	/* Returns the color of triangle the given point is in */
 	Color getTriangle(int r, int c) {
 		
 		if((r == 0 && c == 6) ||
@@ -114,6 +110,7 @@ public class Board {
 		return Color.WHITE;
 	}
 	
+	/* Create pieces depending on amount of players */
 	void setupBoard(int playersNumber) {
 		
 		for(int c = 0; c < columns; c++) {

@@ -3,6 +3,7 @@ package board;
 import javafx.scene.paint.Color;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Board {
 
@@ -20,7 +21,7 @@ public class Board {
 
     /**
      * Selecting field.
-     * @param field
+     * @param field field to select
      */
     public void selectField(Field field)
     {
@@ -40,10 +41,10 @@ public class Board {
     }
 
     /**
-     * Getting field by it's coordinates.
+     * Getting field by its coordinates.
      * @param x coordinate x.
      * @param y coordinate y.
-     * @return
+     * @return field
      */
     private Field getField( int x, int y )
     {
@@ -76,7 +77,7 @@ public class Board {
      * @param y2 y coordinate of the removed piece.
      */
     private void removePiece(int x2, int y2) {
-        getField(x2, y2).setColor(Color.WHITE);
+        Objects.requireNonNull(getField(x2, y2)).setColor(Color.WHITE);
     }
 
     /**
@@ -86,6 +87,6 @@ public class Board {
      * @param y1 y coordinate of the added piece.
      */
     public void addPiece(Color color, int x1, int y1) {
-        getField(x1,y1).setColor(color);
+        Objects.requireNonNull(getField(x1, y1)).setColor(color);
     }
 }

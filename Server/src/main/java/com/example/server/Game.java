@@ -14,14 +14,22 @@ import java.util.concurrent.Executors;
 
 class Game {
 
+	/* Current player making the move */
 	Player currentPlayer;
-	List<Player> players;
+	/* List of player sockets */
 	List<Socket> playerSockets;
+	/* List of players based on playerSockets */
+	List<Player> players;
+	/* Number of players */
 	int playersNumber;
+	/* Board rows */
 	int rows = 17;
+	/* Board columns */
 	int columns = 13;
+	/* The game board */
 	Board board = new Board(rows, columns);
 	
+	/* Main game class */
 	public Game(List<Socket> playerSocket) {
 		this.playerSockets = playerSocket;
 		this.playersNumber = playerSockets.size();
@@ -35,10 +43,11 @@ class Game {
 			} catch (Exception ignored) {}
 		}
 
+		/* Set player colors and creates pawns */
 		setPlayersColors();
 		board.setupBoard(playersNumber);
 
-		/* Send START message to all players and start their threads */
+		/* Send to all players their color, game board and start their threads */
 		var pool = Executors.newFixedThreadPool(200);
 		for(Player p : players) {
 			p.output.println(p.getColor());
@@ -46,9 +55,11 @@ class Game {
 			pool.execute(p);
 		}
 		
+		/* Set the first player */
 		setFirstPlayer();
 	}
 
+	/* Assigns players their colors */
 	private void setPlayersColors() {
 		if(playersNumber == 2) {
 			players.get(0).setColor(PlayerColors.RED);
@@ -72,6 +83,9 @@ class Game {
 		}
 	}
 
+	/* Converts the board to a long string of format (COLOR row column)
+	* repeating for every spot on the board.
+	*/
 	public String createBoardString(Board board) {
 
 		MessageBuilder mb = new MessageBuilder();
@@ -80,7 +94,6 @@ class Game {
 				mb.add(board.getColor(r, c)).add(r).add(c);
 			}
 		}
-		System.out.println(mb.build());
 		return mb.build();
 	}
 
@@ -100,24 +113,25 @@ class Game {
 		return true;
 	}
 	
-	/* Move the pawn */
+	/* Move the pawn and update the board */
 	public void movePawn(int x1, int y1, int x2, int y2){
 		board.setColor(y1, x1, Color.WHITE);
 		board.setColor(y2, x2, currentPlayer.getColor().color);
 	}
 	
-	/* Imo to że czerwony zawsze zaczyna jest ok */
+	/* Sets the starting player to a player playing RED
+	* Might change in the future
+	*  */
 	private void setFirstPlayer() {
 		currentPlayer = players.get(0);
 	}
 	
-	/* When player tries to move
-	* If can - move, return true
-	* If not - throw exception, return false
+	/* Determine weather player can perform a move
+	* If can - return true
+	* If not - return false
+	* Depends on weather player just jumped over another pawn
 	* */
 	public synchronized boolean moveLegal(int x1, int y1, int x2, int y2 ,boolean afterJump) {
-		System.out.println("Received move " + x1 + " " + y1 + " " + x2 + " " + y2);
-		
 		if(afterJump) {
 			return jumpMove(x1, y1, x2, y2) && stayInTriangle(x1, y1, x2, y2);
 		} else {
@@ -125,6 +139,7 @@ class Game {
 		}
 	}
 	
+	/* Determines if given move is a legal one spot move */
 	public boolean oneSpotMove(int x1, int y1, int x2, int y2) {
 		if(y1 % 2 == 0) {
 			if((y2 == y1-1 && ((x2 == x1) || (x2 == x1-1))) ||
@@ -143,6 +158,7 @@ class Game {
 		return false;
 	}
 	
+	/* Determines if given move is a legal jump move */
 	public boolean jumpMove(int x1, int y1, int x2, int y2) {
 		if(y1 % 2 == 0) {
 			if(((y2 == y1-2) && (((x2 == x1-1) && (board.getColor(y1-1,x1-1) != Color.WHITE)) || ((x2 == x1+1) && (board.getColor(y1-1, x1) != Color.WHITE)))) ||
@@ -161,6 +177,7 @@ class Game {
 		return false;
 	}
 	
+	/* Determines weather move is legal based on not leaving the goal triangle */
 	public boolean stayInTriangle(int x1, int y1, int x2, int y2) {
 		
 		if((board.getTriangle(y1, x1) == currentPlayer.getColor().next().next().next().color)
@@ -170,21 +187,29 @@ class Game {
 		return true;
 	}
 	
+	/* Main player class */
 	class Player implements Runnable {
 		
+		/* Player number */
 		int thisPlayerNumber;
+		/* The next player on the list */
 		Player nextPlayer;
+		/* Player's socket */
 		Socket socket;
+		/* Player's way to communicate with client */
 		Scanner input;
 		PrintWriter output;
+		/* Player's color */
 		PlayerColors color;
-		
+		/* Has player just jumped? */
 		boolean afterJump;
 		
+		/* Returns player color */
 		public PlayerColors getColor() {
 			return color;
 		}
 		
+		/* Sets player color */
 		public void setColor(PlayerColors color) {
 			this.color = color;
 		}
@@ -196,6 +221,10 @@ class Game {
 			this.output = new PrintWriter(socket.getOutputStream(), true);
 		}
 		
+		/* Method player calls as a thread
+		* If everything is ok - calls setup(),
+		* then for the rest of the game - processCommands();
+		* */
 		@Override
 		public void run() {
 			try {
@@ -204,9 +233,9 @@ class Game {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				if (nextPlayer != null && nextPlayer.output != null) {
-					//sendToOther("PLAYER_LEFT");
-				}
+				/* if (nextPlayer != null && nextPlayer.output != null) {
+					sendToOther("PLAYER_LEFT");
+				}*/
 				try {
 					socket.close();
 					} catch (IOException ignored) {
@@ -214,7 +243,7 @@ class Game {
 			}
 		}
 		
-		/* Game start */
+		/* Runs at a game start */
 		private void setup() {
 			
 			/* Set up next player for each player */
@@ -225,6 +254,7 @@ class Game {
 			}
 		}
 		
+		/* Interprets the commands from client */
 		private void processCommands() {
 			
 			int x1;
@@ -250,6 +280,7 @@ class Game {
 					
 					processMoveCommand(x1, y1, x2, y2);
 				} else if(command.startsWith("SKIP")) {
+					/* Skips turn */
 						mb.clear();
 						sendToAll(mb.add("COLOR").add(currentPlayer.nextPlayer.getColor().color).build());
 						afterJump = false;
@@ -261,11 +292,12 @@ class Game {
 		
 		
 		
-		/* Command process */
+		/* Process the MOVE command */
 		private void processMoveCommand(int x1, int y1, int x2, int y2) {
 			
 			MessageBuilder mb = new MessageBuilder();
 			
+			/* Checks if the move is legal */
 			if(moveLegal(x1, y1, x2, y2, afterJump)) {
 				
 				movePawn(x1, y1, x2, y2);
@@ -274,33 +306,32 @@ class Game {
 				mb.add("MOVE").add(x1).add(y1).add(x2).add(y2);
 				sendToAll(mb.build());
 				
+				/* Sends command weather the move is jump move or not */
+				mb.clear();
 				if(jumpMove(x1, y1, x2, y2)) {
 					afterJump = true;
-					System.out.println("Set aj to true");
-					mb.clear();
 					mb.add("COLOR").add(currentPlayer.getColor().color).add("ANOTHER");
-					sendToAll(mb.build());
 				} else {
 					afterJump = false;
-					System.out.println("Set aj to false");
-					mb.clear();
 					mb.add("COLOR").add(currentPlayer.nextPlayer.getColor().color);
-					sendToAll(mb.build());
 				}
+				sendToAll(mb.build());
 				
-				
+				/* Sends command if game has a winner */
 				mb.clear();
 				if (hasWinner()) {
 					System.out.println("WIN " + currentPlayer.getColor());
 					sendToAll(mb.add("WIN").add(currentPlayer.getColor().color).build());
 				}
 				
+				/* Sets current player to next player if move wasn't a jump-move */
 				if(!afterJump) {
 					currentPlayer = currentPlayer.nextPlayer;
 				}
 				
 				
 			} else {
+				/*Sends back the same player color if the move was illegal */
 				if(afterJump) {
 					mb.clear();
 					sendToAll(mb.add("COLOR").add(currentPlayer.getColor().color).add("ANOTHER").build());
@@ -311,6 +342,7 @@ class Game {
 			}
 		}
 		
+		/* Send given message to all players */
 		private void sendToAll(String message) {
 			for(Player p : players) {
 				p.output.println(message);

@@ -2,6 +2,7 @@ package com.example.server;
 
 import javafx.scene.paint.Color;
 
+/* Enum storing all possible player colors */
 public enum PlayerColors {
     GREEN(Color.GREEN),
     YELLOW(Color.YELLOW),
@@ -17,12 +18,15 @@ public enum PlayerColors {
     }
 
 
+    /* Array of player colors */
     private static PlayerColors[] vals = values();
+    /* Returns the next color on the list, loops if last */
     public PlayerColors next()
     {
         return vals[(this.ordinal()+1) % vals.length];
     }
     
+    /* Returns the color of next player in the game based on the number of players */
     public PlayerColors nextPlayer(int playersNumber) {
         if(playersNumber == 2) {
             return next().next().next();

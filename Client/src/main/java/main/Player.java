@@ -178,9 +178,11 @@ public class Player
      * Send message to server that you want to skip turn.
      */
     public void skipTurn() {
-        out.println(new MessageBuilder().add("SKIP").build());
-        waitForResponses = 1;
-        Thread thread = new Thread(this::readServerMessages);
-        thread.start();
+        if(Objects.equals(currentPlayerColor, playerColor)) {
+            out.println(new MessageBuilder().add("SKIP").build());
+            waitForResponses = 1;
+            Thread thread = new Thread(this::readServerMessages);
+            thread.start();
+        }
     }
 }

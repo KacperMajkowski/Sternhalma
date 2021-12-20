@@ -76,13 +76,14 @@ public class Player
                 else if (words[0].equals("COLOR")) {
                     waitForResponses = 0;
                     Color color = Color.web(words[1]);
-                    
+    
+                    blockedSelecting = false;
                     if (color.equals(currentPlayerColor) && color.equals(playerColor)) {
-                        blockedSelecting = false;
                         if (words[2].equals("ANOTHER")) {
                             makeAnotherMove();
                         }
                     } else {
+                        
                         board.deselectAllFields();
                     }
                     setCurrentPlayerColor(color);

@@ -248,15 +248,10 @@ class Game {
 					
 					processMoveCommand(x1, y1, x2, y2);
 				} else if(command.startsWith("SKIP")) {
-					if(Objects.equals(words[1], currentPlayer.getColor().color.toString())) {
 						mb.clear();
 						sendToAll(mb.add("COLOR").add(currentPlayer.nextPlayer.getColor().color).build());
 						afterJump = false;
 						currentPlayer = currentPlayer.nextPlayer;
-					} else {
-						mb.clear();
-						sendToAll(mb.add("COLOR").add(currentPlayer.getColor().color).build());
-					}
 				}
 			}
 		}
@@ -303,9 +298,7 @@ class Game {
 			} else {
 				if(afterJump) {
 					mb.clear();
-					sendToAll(mb.add("COLOR").add(currentPlayer.nextPlayer.getColor().color).build());
-					afterJump = false;
-					currentPlayer = currentPlayer.nextPlayer;
+					sendToAll(mb.add("COLOR").add(currentPlayer.getColor().color).add("ANOTHER").build());
 				} else {
 					mb.clear();
 					sendToAll(mb.add("COLOR").add(currentPlayer.getColor().color).build());

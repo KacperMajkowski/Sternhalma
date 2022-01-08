@@ -9,7 +9,7 @@ public class Board {
 	int columns;
 	Color[][] board;
 	
-	Board(int rows, int columns) {
+	public Board(int rows, int columns) {
 		this.rows = rows;
 		this.columns = columns;
 		board = new Color[rows][columns];

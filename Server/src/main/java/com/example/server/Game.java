@@ -12,7 +12,7 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-class Game {
+public class Game {
 
 	/* Current player making the move */
 	Player currentPlayer;
@@ -126,67 +126,6 @@ class Game {
 		currentPlayer = players.get(0);
 	}
 	
-	/* Determine weather player can perform a move
-	* If can - return true
-	* If not - return false
-	* Depends on weather player just jumped over another pawn
-	* */
-	public synchronized boolean moveLegal(int x1, int y1, int x2, int y2 ,boolean afterJump) {
-		if(afterJump) {
-			return jumpMove(x1, y1, x2, y2) && stayInTriangle(x1, y1, x2, y2);
-		} else {
-			return (oneSpotMove(x1, y1, x2, y2) || jumpMove(x1 ,y1, x2, y2)) && stayInTriangle(x1, y1, x2, y2);
-		}
-	}
-	
-	/* Determines if given move is a legal one spot move */
-	public boolean oneSpotMove(int x1, int y1, int x2, int y2) {
-		if(y1 % 2 == 0) {
-			if((y2 == y1-1 && ((x2 == x1) || (x2 == x1-1))) ||
-					(y2 == y1 && ((x2 == x1-1) || (x2 == x1+1))) ||
-					(y2 == y1+1 && ((x2 == x1) || (x2 == x1-1)))){
-				return true;
-			}
-		} else {
-			if((y2 == y1-1 && ((x2 == x1) || (x2 == x1+1))) ||
-					(y2 == y1 && ((x2 == x1-1) || (x2 == x1+1))) ||
-					(y2 == y1+1 && ((x2 == x1) || (x2 == x1+1)))){
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	/* Determines if given move is a legal jump move */
-	public boolean jumpMove(int x1, int y1, int x2, int y2) {
-		if(y1 % 2 == 0) {
-			if(((y2 == y1-2) && (((x2 == x1-1) && (board.getColor(y1-1,x1-1) != Color.WHITE)) || ((x2 == x1+1) && (board.getColor(y1-1, x1) != Color.WHITE)))) ||
-					((y2 == y1) && (((x2 == x1-2) && (board.getColor(y1,x1-1) != Color.WHITE)) || ((x2 == x1+2) && (board.getColor(y1, x1+1) != Color.WHITE)))) ||
-					((y2 == y1+2) && (((x2 == x1-1) && (board.getColor(y1+1,x1-1) != Color.WHITE)) || ((x2 == x1+1) && (board.getColor(y1+1, x1) != Color.WHITE))))){
-				return true;
-			}
-		} else {
-			if(((y2 == y1-2) && (((x2 == x1-1) && (board.getColor(y1-1, x1) != Color.WHITE)) || ((x2 == x1+1) && (board.getColor(y1-1, x1+1) != Color.WHITE)))) ||
-					((y2 == y1) && (((x2 == x1-2) && (board.getColor(y1,x1-1) != Color.WHITE)) || ((x2 == x1+2) && (board.getColor(y1, x1+1) != Color.WHITE)))) ||
-					((y2 == y1+2) && (((x2 == x1-1) && (board.getColor(y1+1,x1) != Color.WHITE)) || ((x2 == x1+1) && (board.getColor(y1+1, x1+1) != Color.WHITE))))) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	/* Determines weather move is legal based on not leaving the goal triangle */
-	public boolean stayInTriangle(int x1, int y1, int x2, int y2) {
-		
-		if((board.getTriangle(y1, x1) == currentPlayer.getColor().next().next().next().color)
-			&& (board.getTriangle(y2, x2) != currentPlayer.getColor().next().next().next().color)) {
-				return false;
-		}
-		return true;
-	}
-	
 	/* Main player class */
 	class Player implements Runnable {
 		
@@ -296,9 +235,10 @@ class Game {
 		private void processMoveCommand(int x1, int y1, int x2, int y2) {
 			
 			MessageBuilder mb = new MessageBuilder();
+			MoveTester mt = new MoveTester(x1, y1, x2, y2, afterJump, currentPlayer, board);
 			
 			/* Checks if the move is legal */
-			if(moveLegal(x1, y1, x2, y2, afterJump)) {
+			if(mt.testMove()) {
 				
 				movePawn(x1, y1, x2, y2);
 				
@@ -308,7 +248,7 @@ class Game {
 				
 				/* Sends command weather the move is jump move or not */
 				mb.clear();
-				if(jumpMove(x1, y1, x2, y2)) {
+				if(mt.isJumpMove()) {
 					afterJump = true;
 					mb.add("COLOR").add(currentPlayer.getColor().color).add("ANOTHER");
 				} else {

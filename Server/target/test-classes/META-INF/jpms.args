@@ -1,0 +1,4 @@
+--patch-module
+com.example.server=_
+--add-reads
+com.example.server=ALL-UNNAMED

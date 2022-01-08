@@ -126,6 +126,12 @@ public class Game {
 		currentPlayer = players.get(0);
 	}
 	
+	private void reassignPlayers() {
+		for(Player p : players) {
+			p.reassignNextPlayer();
+		}
+	}
+	
 	/* Main player class */
 	class Player implements Runnable {
 		
@@ -142,6 +148,8 @@ public class Game {
 		PlayerColors color;
 		/* Has player just jumped? */
 		boolean afterJump;
+		/**Has the player already won? */
+		boolean alreadyWon = false;
 		
 		/* Returns player color */
 		public PlayerColors getColor() {
@@ -193,6 +201,12 @@ public class Game {
 			}
 		}
 		
+		private void reassignNextPlayer() {
+			if(nextPlayer.alreadyWon) {
+				nextPlayer = nextPlayer.nextPlayer;
+			}
+		}
+		
 		/* Interprets the commands from client */
 		private void processCommands() {
 			
@@ -223,7 +237,6 @@ public class Game {
 						mb.clear();
 						sendToAll(mb.add("COLOR").add(currentPlayer.nextPlayer.getColor().color).build());
 						afterJump = false;
-						System.out.println("Set aj to false");
 						currentPlayer = currentPlayer.nextPlayer;
 				}
 			}
@@ -260,6 +273,8 @@ public class Game {
 				/* Sends command if game has a winner */
 				mb.clear();
 				if (hasWinner()) {
+					alreadyWon = true;
+					reassignPlayers();
 					System.out.println("WIN " + currentPlayer.getColor());
 					sendToAll(mb.add("WIN").add(currentPlayer.getColor().color).build());
 				}

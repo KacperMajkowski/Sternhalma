@@ -46,7 +46,7 @@ public class Board {
      * @param y coordinate y.
      * @return field
      */
-    private Field getField( int x, int y )
+    public Field getField( int x, int y )
     {
         for( Field field : fieldList )
         {

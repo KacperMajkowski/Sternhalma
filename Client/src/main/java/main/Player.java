@@ -163,14 +163,14 @@ public class Player
      * @param color Clicked field color
      * @return True if event is legal. False otherwise.
      */
-    public boolean checkIfEventLegal(Color color) {
+    private boolean checkIfEventLegal(Color color) {
         return ((color.equals(playerColor) || color.equals(Color.WHITE)) && playersTurn());
     }
 
     /**
      * Checking if it's player's turn
      */
-    public boolean playersTurn() {
+    private boolean playersTurn() {
         return (playerColor.equals(currentPlayerColor));
     }
 

@@ -9,6 +9,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FieldTest
 {
+    private Circle circle;
+    @Test
+    void getCircle() {
+        Field field = createTestField();
+
+        assertEquals(field.getCircle(), circle);
+    }
+
     @Test
     void getX()
     {
@@ -55,10 +63,8 @@ class FieldTest
         assertEquals(field.getCircle().getStrokeType(), StrokeType.OUTSIDE);
     }
 
-
     private Field createTestField()
     {
-        Circle circle = new Circle();
         return new Field( 3, 8, circle );
     }
 }

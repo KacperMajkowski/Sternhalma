@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class Board {
 
-    private List<Field> fieldList;
+    private final List<Field> fieldList;
     private Field selectedField = null;
 
     public Board( List<Field> fieldList )

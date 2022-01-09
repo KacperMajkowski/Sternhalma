@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class Board {
 
-    private List<Field> fieldList;
+    private final List<Field> fieldList;
     private Field selectedField = null;
 
     public Board( List<Field> fieldList )
@@ -46,7 +46,7 @@ public class Board {
      * @param y coordinate y.
      * @return field
      */
-    private Field getField( int x, int y )
+    public Field getField( int x, int y )
     {
         for( Field field : fieldList )
         {

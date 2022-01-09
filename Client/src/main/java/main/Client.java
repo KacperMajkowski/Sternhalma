@@ -115,6 +115,7 @@ public class Client {
         createPlayer();
         turn.start();
         createButton();
+        player.addStartingPieces();
         player.readServerMessages();
     }
 
@@ -166,7 +167,7 @@ public class Client {
     /**
      * Creating dialog through which user can connect.
      */
-    public void newConnection()
+    private void newConnection()
     {
         Dialog<Pair<String, String>> dialog = new Dialog<>();
         dialog.setTitle("Establishing a connection");

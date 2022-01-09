@@ -11,10 +11,10 @@ import java.util.Objects;
 
 public class Player
 {
-    private Board board;
-    private Color playerColor;
-    private BufferedReader in;
-    private PrintWriter out;
+    private final Board board;
+    private final Color playerColor;
+    private final BufferedReader in;
+    private final PrintWriter out;
     private Color currentPlayerColor = Color.RED;
     private int waitForResponses = 0;
     private Field lastClickedField;
@@ -25,8 +25,6 @@ public class Player
         this.out = out;
         this.in = in;
         this.playerColor = playerColor;
-
-        addStartingPieces();
     }
 
     public void setCurrentPlayerColor(Color currentPlayerColor) {
@@ -40,7 +38,7 @@ public class Player
     /**
      * Adding pieces at the start of the game.
      */
-    private void addStartingPieces() {
+    public void addStartingPieces() {
         String boardString;
         try {
             boardString = in.readLine();
@@ -70,28 +68,36 @@ public class Player
             }
             if (response != null) {
                 String[] words = response.split(" ");
-                if (words[0].equals("MOVE")) {
-                    board.makeMove(currentPlayerColor, Integer.parseInt(words[1]), Integer.parseInt(words[2]), Integer.parseInt(words[3]), Integer.parseInt(words[4]));
-                }
-                else if (words[0].equals("COLOR")) {
-                    waitForResponses = 0;
-                    Color color = Color.web(words[1]);
-    
-                    blockedSelecting = false;
-                    if (color.equals(currentPlayerColor) && color.equals(playerColor)) {
-                        if (words[2].equals("ANOTHER")) {
-                            makeAnotherMove();
-                        }
-                    } else {
-                        
-                        board.deselectAllFields();
-                    }
-                    setCurrentPlayerColor(color);
-                }
-                else if (words[0].equals("WIN")) {
-                    winAlert(words[1]);
-                }
+                executeMessages(words);
             }
+        }
+    }
+
+    /**
+     * Executes server messages
+     * @param words server message
+     */
+    private void executeMessages(String[] words) {
+        if (words[0].equals("MOVE")) {
+            board.makeMove(currentPlayerColor, Integer.parseInt(words[1]), Integer.parseInt(words[2]), Integer.parseInt(words[3]), Integer.parseInt(words[4]));
+        }
+        else if (words[0].equals("COLOR")) {
+            waitForResponses = 0;
+            Color color = Color.web(words[1]);
+
+            blockedSelecting = false;
+            if (color.equals(currentPlayerColor) && color.equals(playerColor)) {
+                if (words[2].equals("ANOTHER")) {
+                    makeAnotherMove();
+                }
+            } else {
+
+                board.deselectAllFields();
+            }
+            setCurrentPlayerColor(color);
+        }
+        else if (words[0].equals("WIN")) {
+            winAlert(words[1], words[2]);
         }
     }
 
@@ -107,21 +113,22 @@ public class Player
 
     /**
      * Creating alert informing that one of the players have won.
-     * @param word winning player
+     * @param color winning player
      */
-    private void winAlert(String word) {
-        Color c = Color.web(word);
+    private void winAlert(String color, String place) {
+        Color c = Color.web(color);
+        int p = Integer.parseInt(place);
         if (c.equals(playerColor)) {
             Alert alert = new Alert( Alert.AlertType.INFORMATION);
             alert.setTitle("Win");
-            alert.setHeaderText("You have won!");
+            alert.setHeaderText("You have placed "+p);
             alert.show();
             System.exit(0);
         }
         else {
             Alert alert = new Alert( Alert.AlertType.INFORMATION);
             alert.setTitle("Win");
-            alert.setHeaderText("Player "+currentPlayerColor+" have won");
+            alert.setHeaderText("Player "+currentPlayerColor+" have placed "+p);
             alert.show();
         }
     }
@@ -163,14 +170,14 @@ public class Player
      * @param color Clicked field color
      * @return True if event is legal. False otherwise.
      */
-    public boolean checkIfEventLegal(Color color) {
+    private boolean checkIfEventLegal(Color color) {
         return ((color.equals(playerColor) || color.equals(Color.WHITE)) && playersTurn());
     }
 
     /**
      * Checking if it's player's turn
      */
-    public boolean playersTurn() {
+    private boolean playersTurn() {
         return (playerColor.equals(currentPlayerColor));
     }
 
@@ -178,7 +185,7 @@ public class Player
      * Send message to server that you want to skip turn.
      */
     public void skipTurn() {
-        if(Objects.equals(currentPlayerColor, playerColor)) {
+        if(playersTurn()) {
             out.println(new MessageBuilder().add("SKIP").build());
             waitForResponses = 1;
             Thread thread = new Thread(this::readServerMessages);

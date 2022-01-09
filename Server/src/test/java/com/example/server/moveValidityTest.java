@@ -1,7 +1,7 @@
 package com.example.server;
 import javafx.scene.paint.Color;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 public class moveValidityTest {
 	
@@ -16,7 +16,7 @@ public class moveValidityTest {
 	}
 	
 	@Test
-	void testColor() {
+	public void testColor() {
 		Board board = setUpTestBoard();
 		board.setColor(1, 1, Color.RED);
 		
@@ -24,7 +24,7 @@ public class moveValidityTest {
 	}
 	
 	@Test
-	void testOneSpotMoveTrue() {
+	public void testOneSpotMoveTrue() {
 		Board board = setUpTestBoard();
 		MoveTester mt = new MoveTester(0, 0, 1, 0, PlayerColors.RED, false, board);
 		
@@ -32,7 +32,7 @@ public class moveValidityTest {
 	}
 	
 	@Test
-	void testOneSpotMoveFalse() {
+	public void testOneSpotMoveFalse() {
 		Board board = setUpTestBoard();
 		MoveTester mt = new MoveTester(0, 0, 2, 0, PlayerColors.RED, false, board);
 		
@@ -40,7 +40,7 @@ public class moveValidityTest {
 	}
 	
 	@Test
-	void testJumpMoveTrue() {
+	public void testJumpMoveTrue() {
 		Board board = setUpTestBoard();
 		board.setColor(0, 1, Color.RED);
 		MoveTester mt = new MoveTester(0, 0, 2, 0, PlayerColors.RED, false, board);
@@ -49,7 +49,7 @@ public class moveValidityTest {
 	}
 	
 	@Test
-	void testJumpMoveFalse() {
+	public void testJumpMoveFalse() {
 		Board board = setUpTestBoard();
 		MoveTester mt = new MoveTester(0, 0, 2, 0, PlayerColors.RED, false, board);
 		
@@ -57,7 +57,7 @@ public class moveValidityTest {
 	}
 	
 	@Test
-	void testCantLeaveOpposingTriangle() {
+	public void testCantLeaveOpposingTriangle() {
 		Board board = new Board(17, 13);
 		board.setupBoard(2);
 		MoveTester mt = new MoveTester(5, 3, 5, 4, PlayerColors.RED, false, board);
@@ -66,7 +66,7 @@ public class moveValidityTest {
 	}
 	
 	@Test
-	void testCanLeaveOwnTriangle() {
+	public void testCanLeaveOwnTriangle() {
 		Board board = new Board(17, 13);
 		board.setupBoard(2);
 		MoveTester mt = new MoveTester(5, 3, 5, 4, PlayerColors.GREEN, false, board);

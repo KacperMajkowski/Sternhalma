@@ -12,6 +12,25 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayerTest {
 
+    private final Field selectedField = new Field(3,3, new Circle());
+    private final Board board = createTestBoard();
+
+    @Test
+    public void handleMoveClick() {
+        Player player = createTestPlayer();
+        board.selectField(selectedField);
+        player.handleMouseClicked(selectedField);
+        assertNull(board.getSelectedField());
+    }
+
+    @Test
+    public void handleSelectClick() {
+        Player player = createTestPlayer();
+        selectedField.setColor(Color.RED);
+        player.handleMouseClicked(selectedField);
+        assertEquals(board.getSelectedField(),selectedField);
+    }
+
     @Test
     public void getCurrentPlayerColor() {
         Player player = createTestPlayer();
@@ -38,6 +57,7 @@ public class PlayerTest {
         fields.add( new Field( 1, 0, new Circle() ) );
         fields.add( new Field( 1, 1, new Circle() ) );
         fields.add( new Field( 1, 2, new Circle() ) );
+        fields.add(selectedField);
 
         return new Board( fields );
     }
@@ -53,6 +73,6 @@ public class PlayerTest {
         } catch (IOException e) {
             e.printStackTrace();
         }*/
-        return new Player(createTestBoard(), null, null , Color.GREEN);
+        return new Player(board, null, null , Color.RED);
     }
 }

@@ -128,7 +128,7 @@ public class Player
         else {
             Alert alert = new Alert( Alert.AlertType.INFORMATION);
             alert.setTitle("Win");
-            alert.setHeaderText("Player "+currentPlayerColor+" have placed "+p);
+            alert.setHeaderText("Player "+currentPlayerColor+" has placed "+p);
             alert.showAndWait();
         }
     }

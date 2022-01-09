@@ -9,7 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FieldTest
 {
-    private Circle circle;
+    private final Circle circle = new Circle();
+    
     @Test
     public void getCircle() {
         Field field = createTestField();

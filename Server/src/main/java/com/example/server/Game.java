@@ -149,6 +149,8 @@ public class Game {
 		boolean afterJump;
 		/**Has the player already won? */
 		boolean alreadyWon = false;
+		/**How many players already won */
+		int playersWon = 0;
 		
 		/* Returns player color */
 		private PlayerColors getColor() {
@@ -273,9 +275,10 @@ public class Game {
 				mb.clear();
 				if (hasWinner()) {
 					alreadyWon = true;
+					playersWon += 1;
 					reassignPlayers();
 					System.out.println("WIN " + currentPlayer.getColor());
-					sendToAll(mb.add("WIN").add(currentPlayer.getColor().color).build());
+					sendToAll(mb.add("WIN").add(currentPlayer.getColor().color).add(playersWon).build());
 				}
 				
 				/* Sets current player to next player if move wasn't a jump-move */

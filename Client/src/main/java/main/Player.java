@@ -122,14 +122,14 @@ public class Player
             Alert alert = new Alert( Alert.AlertType.INFORMATION);
             alert.setTitle("Win");
             alert.setHeaderText("You have placed "+p);
-            alert.show();
+            alert.showAndWait();
             System.exit(0);
         }
         else {
             Alert alert = new Alert( Alert.AlertType.INFORMATION);
             alert.setTitle("Win");
             alert.setHeaderText("Player "+currentPlayerColor+" have placed "+p);
-            alert.show();
+            alert.showAndWait();
         }
     }
 

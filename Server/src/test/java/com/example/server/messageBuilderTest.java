@@ -1,14 +1,14 @@
 package com.example.server;
 import javafx.scene.paint.Color;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import java.util.Objects;
 
 public class messageBuilderTest {
 	
 	@Test
-	void testSimpleMessage() {
+	public void testSimpleMessage() {
 		MessageBuilder mb = new MessageBuilder();
 		mb.add("TEST");
 		
@@ -18,7 +18,7 @@ public class messageBuilderTest {
 	}
 	
 	@Test
-	void testComplexMessage() {
+	public void testComplexMessage() {
 		MessageBuilder mb = new MessageBuilder();
 		mb.add("TEST").add(1).add(Color.RED);
 		
@@ -30,7 +30,7 @@ public class messageBuilderTest {
 	}
 	
 	@Test
-	void testClearBuilder() {
+	public void testClearBuilder() {
 		MessageBuilder mb = new MessageBuilder();
 		mb.add("TEST1");
 		mb.clear();

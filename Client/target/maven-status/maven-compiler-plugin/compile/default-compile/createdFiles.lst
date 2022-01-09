@@ -1,0 +1,8 @@
+board\Board.class
+board\Field.class
+main\Client.class
+module-info.class
+main\Client$1.class
+main\MessageBuilder.class
+main\Player.class
+main\Main.class

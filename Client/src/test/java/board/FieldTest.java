@@ -3,36 +3,36 @@ package board;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.StrokeType;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FieldTest
+public class FieldTest
 {
     private Circle circle;
     @Test
-    void getCircle() {
+    public void getCircle() {
         Field field = createTestField();
 
         assertEquals(field.getCircle(), circle);
     }
 
     @Test
-    void getX()
+    public void getX()
     {
         Field field = createTestField();
         assertEquals( 3, field.getX() );
     }
 
     @Test
-    void getY()
+    public void getY()
     {
         Field field = createTestField();
         assertEquals( 8, field.getY() );
     }
 
     @Test
-    void getColor()
+    public void getColor()
     {
         Field field = createTestField();
 
@@ -40,7 +40,7 @@ class FieldTest
     }
 
     @Test
-    void setColor() {
+    public void setColor() {
         Field field = createTestField();
 
         field.setColor(Color.RED);
@@ -51,7 +51,7 @@ class FieldTest
     }
 
     @Test
-    void setSelected()
+    public void setSelected()
     {
         Field field = createTestField();
 

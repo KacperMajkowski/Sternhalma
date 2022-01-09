@@ -85,7 +85,7 @@ public class Game {
 	/* Converts the board to a long string of format (COLOR row column)
 	* repeating for every spot on the board.
 	*/
-	public String createBoardString(Board board) {
+	private String createBoardString(Board board) {
 
 		MessageBuilder mb = new MessageBuilder();
 		for(int c = 0; c < columns; c++) {
@@ -97,7 +97,7 @@ public class Game {
 	}
 
 	/* Check if game has a winner */
-	public boolean hasWinner() {
+	private boolean hasWinner() {
 		
 		for(int r = 0; r < rows; r++) {
 			for (int c = 0; c < columns; c++) {
@@ -113,7 +113,7 @@ public class Game {
 	}
 	
 	/* Move the pawn and update the board */
-	public void movePawn(int x1, int y1, int x2, int y2){
+	private void movePawn(int x1, int y1, int x2, int y2){
 		board.setColor(y1, x1, Color.WHITE);
 		board.setColor(y2, x2, currentPlayer.getColor().color);
 	}
@@ -151,12 +151,12 @@ public class Game {
 		boolean alreadyWon = false;
 		
 		/* Returns player color */
-		public PlayerColors getColor() {
+		private PlayerColors getColor() {
 			return color;
 		}
 		
 		/* Sets player color */
-		public void setColor(PlayerColors color) {
+		private void setColor(PlayerColors color) {
 			this.color = color;
 		}
 		

@@ -9,7 +9,7 @@ public interface TestMoveValidity {
 	 * If not - return false
 	 * Depends on weather player just jumped over another pawn
 	 * */
-	boolean moveLegal(int x1, int y1, int x2, int y2, boolean afterJump);
+	boolean moveLegal(int x1, int y1, int x2, int y2, boolean afterJump, PlayerColors color);
 	
 	/* Determines if given move is a legal one spot move */
 	boolean oneSpotMove(int x1, int y1, int x2, int y2);
@@ -18,6 +18,6 @@ public interface TestMoveValidity {
 	boolean jumpMove(int x1, int y1, int x2, int y2);
 	
 	/* Determines weather move is legal based on not leaving the goal triangle */
-	boolean stayInTriangle(int x1, int y1, int x2, int y2);
+	boolean stayInTriangle(int x1, int y1, int x2, int y2, PlayerColors color);
 	
 }

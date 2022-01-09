@@ -4,7 +4,7 @@ import board.Board;
 import board.Field;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PlayerTest {
 
     @Test
-    void getCurrentPlayerColor() {
+    public void getCurrentPlayerColor() {
         Player player = createTestPlayer();
 
         assertEquals(player.getCurrentPlayerColor(), Color.RED);
@@ -27,7 +27,7 @@ public class PlayerTest {
     }
 
     @Test
-    void setPlayerColor() {
+    public void setPlayerColor() {
         Player player = createTestPlayer();
 
         player.setCurrentPlayerColor(Color.AQUA);

@@ -1,13 +1,13 @@
 package main;
 
 import javafx.scene.paint.Color;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MessageBuilderTest {
 
     @Test
-    void addString() {
+    public void addString() {
         MessageBuilder mb = new MessageBuilder();
 
         mb.add("TEST");
@@ -16,7 +16,7 @@ public class MessageBuilderTest {
     }
 
     @Test
-    void addInt() {
+    public void addInt() {
         MessageBuilder mb = new MessageBuilder();
 
         mb.add(123);
@@ -25,7 +25,7 @@ public class MessageBuilderTest {
     }
 
     @Test
-    void addColor() {
+    public void addColor() {
         MessageBuilder mb = new MessageBuilder();
 
         mb.add(Color.AQUA);
@@ -34,7 +34,7 @@ public class MessageBuilderTest {
     }
 
     @Test
-    void addCombined() {
+    public void addCombined() {
         MessageBuilder mb = new MessageBuilder();
 
         mb.add(Color.AQUA).add(123).add("TEST").add(Color.AZURE);
@@ -43,7 +43,7 @@ public class MessageBuilderTest {
     }
 
     @Test
-    void clear() {
+    public void clear() {
         MessageBuilder mb = new MessageBuilder();
         mb.add("TEST").clear();
         assertEquals("",mb.build());

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Game {
@@ -248,7 +247,7 @@ public class Game {
 		private void processMoveCommand(int x1, int y1, int x2, int y2) {
 			
 			MessageBuilder mb = new MessageBuilder();
-			MoveTester mt = new MoveTester(x1, y1, x2, y2, afterJump, currentPlayer, board);
+			MoveTester mt = new MoveTester(x1, y1, x2, y2, currentPlayer.color, afterJump, board);
 			
 			/* Checks if the move is legal */
 			if(mt.testMove()) {

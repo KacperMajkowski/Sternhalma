@@ -18,8 +18,8 @@ public class Board {
 		board = new Color[rows][columns];
 	}
 	
-	/* Returns color at given row and column */
-	Color getColor(int row, int column) {
+	/** Returns color at given row and column */
+	public Color getColor(int row, int column) {
 		return board[row][column];
 	}
 	
@@ -28,7 +28,7 @@ public class Board {
 	 * @param column Set color in this column
 	 * @param color Set this color
 	 * Sets given color at given row and column */
-	void setColor(int row, int column, Color color) {
+	public void setColor(int row, int column, Color color) {
 		board[row][column] = color;
 	}
 	
@@ -37,7 +37,7 @@ public class Board {
 	 * @param c Column
 	 * @return color of triangle in this spot
 	 * Returns the color of triangle the given point is in */
-	Color getTriangle(int r, int c) {
+	public Color getTriangle(int r, int c) {
 		
 		if((r == 0 && c == 6) ||
 				(r == 1 && c == 5) ||
@@ -122,7 +122,7 @@ public class Board {
 	}
 	
 	/* Create pieces depending on amount of players */
-	void setupBoard(int playersNumber) {
+	public void setupBoard(int playersNumber) {
 		
 		for(int c = 0; c < columns; c++) {
 			for(int r = 0; r < rows; r++) {

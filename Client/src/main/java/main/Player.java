@@ -9,6 +9,9 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.Objects;
 
+/**
+ * Class responsible for the Player-Server communication, execution of messages and player input.
+ */
 public class Player
 {
     private final Board board;

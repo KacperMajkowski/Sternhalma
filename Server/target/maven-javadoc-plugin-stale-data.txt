@@ -1,0 +1,47 @@
+@options
+@packages
+@argfile
+--class-path
+'C:/Users/Kacper/.m2/repository/org/openjfx/javafx-controls/17.0.0.1/javafx-controls-17.0.0.1.jar;C:/Users/Kacper/.m2/repository/org/openjfx/javafx-graphics/17.0.0.1/javafx-graphics-17.0.0.1.jar;C:/Users/Kacper/.m2/repository/org/openjfx/javafx-base/17.0.0.1/javafx-base-17.0.0.1.jar;C:/Users/Kacper/.m2/repository/org/openjfx/javafx-fxml/17.0.0.1/javafx-fxml-17.0.0.1.jar'
+--module-path
+'C:/Users/Kacper/.m2/repository/org/openjfx/javafx-graphics/17.0.0.1/javafx-graphics-17.0.0.1-win.jar;C:/Users/Kacper/.m2/repository/org/openjfx/javafx-fxml/17.0.0.1/javafx-fxml-17.0.0.1-win.jar;C:/Users/Kacper/Desktop/TPL4/Server/target/classes;C:/Users/Kacper/.m2/repository/org/openjfx/javafx-controls/17.0.0.1/javafx-controls-17.0.0.1-win.jar;C:/Users/Kacper/.m2/repository/org/openjfx/javafx-base/17.0.0.1/javafx-base-17.0.0.1-win.jar'
+--patch-module
+com.example.server='C:/Users/Kacper/Desktop/TPL4/Server/src/main/java'
+-encoding
+'UTF-8'
+-protected
+--module-source-path
+'C:/Users/Kacper/Desktop/TPL4/Server/target/site/apidocs/src'
+-author
+-bottom
+'Copyright &#169; 2022. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'C:/Users/Kacper/Desktop/TPL4/Server/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'Server 1.0-SNAPSHOT API'
+-use
+-version
+-windowtitle
+'Server 1.0-SNAPSHOT API'
+com.example.server
+'C:/Users/Kacper/Desktop/TPL4/Server/src/main/java/module-info.java'
+C:\Users\Kacper\Desktop\TPL4\Server\target\site\apidocs\allclasses-index.html = 1641847401782
+C:\Users\Kacper\Desktop\TPL4\Server\target\site\apidocs\allpackages-index.html = 1641847401785
+C:\Users\Kacper\Desktop\TPL4\Server\target\site\apidocs\element-list = 1641847401695
+C:\Users\Kacper\Desktop\TPL4\Server\target\site\apidocs\help-doc.html = 1641847401810
+C:\Users\Kacper\Desktop\TPL4\Server\target\site\apidocs\index-all.html = 1641847401804
+C:\Users\Kacper\Desktop\TPL4\Server\target\site\apidocs\index.html = 1641847401806
+C:\Users\Kacper\Desktop\TPL4\Server\target\site\apidocs\jquery-ui.overrides.css = 1641847401839
+C:\Users\Kacper\Desktop\TPL4\Server\target\site\apidocs\member-search-index.js = 1641847401790
+C:\Users\Kacper\Desktop\TPL4\Server\target\site\apidocs\module-search-index.js = 1641847401786
+C:\Users\Kacper\Desktop\TPL4\Server\target\site\apidocs\overview-tree.html = 1641847401769
+C:\Users\Kacper\Desktop\TPL4\Server\target\site\apidocs\package-search-index.js = 1641847401788
+C:\Users\Kacper\Desktop\TPL4\Server\target\site\apidocs\script.js = 1641847401813
+C:\Users\Kacper\Desktop\TPL4\Server\target\site\apidocs\search.js = 1641847401816
+C:\Users\Kacper\Desktop\TPL4\Server\target\site\apidocs\stylesheet.css = 1641847401812
+C:\Users\Kacper\Desktop\TPL4\Server\target\site\apidocs\tag-search-index.js = 1641847401791
+C:\Users\Kacper\Desktop\TPL4\Server\target\site\apidocs\type-search-index.js = 1641847401789

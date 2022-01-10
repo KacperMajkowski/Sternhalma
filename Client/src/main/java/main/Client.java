@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Controller of the board. Also connects to server while initializing.
+ */
 public class Client {
 
     /**

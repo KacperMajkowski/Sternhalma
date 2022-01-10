@@ -6,12 +6,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * Main class responsible for launching the client.
+ */
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("board.fxml"));
-        primaryStage.setTitle("Chineese checkers");
+        primaryStage.setTitle("Chinese checkers");
         
         
         

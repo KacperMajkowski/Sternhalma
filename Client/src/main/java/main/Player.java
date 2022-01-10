@@ -9,6 +9,9 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.Objects;
 
+/**
+ * Class responsible for Player-Server communication, execution of messages and player's interactions.
+ */
 public class Player
 {
     private final Board board;
@@ -122,14 +125,14 @@ public class Player
             Alert alert = new Alert( Alert.AlertType.INFORMATION);
             alert.setTitle("Win");
             alert.setHeaderText("You have placed "+p);
-            alert.show();
+            alert.showAndWait();
             System.exit(0);
         }
         else {
             Alert alert = new Alert( Alert.AlertType.INFORMATION);
             alert.setTitle("Win");
-            alert.setHeaderText("Player "+currentPlayerColor+" have placed "+p);
-            alert.show();
+            alert.setHeaderText("Player "+color+" have placed "+p);
+            alert.showAndWait();
         }
     }
 

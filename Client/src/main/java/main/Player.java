@@ -15,7 +15,7 @@ public class Player
     private final Color playerColor;
     private final BufferedReader in;
     private final PrintWriter out;
-    private Color currentPlayerColor = Color.RED;
+    private Color currentPlayerColor = Color.BLACK;
     private int waitForResponses = 0;
     private Field lastClickedField;
     private boolean blockedSelecting;

@@ -5,34 +5,36 @@ import javafx.scene.paint.Color;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.Executors;
 
+/**
+ * Main game class
+ */
 public class Game {
 
-	/* Current player making the move */
+	/** Current player making the move */
 	Player currentPlayer;
-	/* List of player sockets */
+	/** List of player sockets */
 	List<Socket> playerSockets;
-	/* List of players based on playerSockets */
+	/** List of players based on playerSockets */
 	List<Player> players;
-	/* Number of players */
+	/** Number of players */
 	int playersNumber;
-	/* Board rows */
+	/** Board rows */
 	int rows = 17;
-	/* Board columns */
+	/** Board columns */
 	int columns = 13;
-	/* The game board */
+	/** The game board */
 	Board board = new Board(rows, columns);
 	
-	/* Main game class */
+	/**
+	 * Game constructor
+	 * @param playerSocket List of players sockets
+	 */
 	public Game(List<Socket> playerSocket) {
 		this.playerSockets = playerSocket;
 		this.playersNumber = playerSockets.size();
-		/*Create list of players */
 		this.players = new ArrayList<>();
 		
 		/* Add players to list based on sockets */
@@ -45,20 +47,25 @@ public class Game {
 		/* Set player colors and creates pawns */
 		setPlayersColors();
 		board.setupBoard(playersNumber);
-
+		
+		/* Set the first player */
+		setFirstPlayer();
+		
 		/* Send to all players their color, game board and start their threads */
 		var pool = Executors.newFixedThreadPool(200);
 		for(Player p : players) {
 			p.output.println(p.getColor());
 			p.output.println(createBoardString(board));
+			p.output.println("COLOR " + currentPlayer.getColor());
 			pool.execute(p);
 		}
 		
-		/* Set the first player */
-		setFirstPlayer();
+		
 	}
-
-	/* Assigns players their colors */
+	
+	/**
+	 * Assigns players their colors
+	 */
 	private void setPlayersColors() {
 		if(playersNumber == 2) {
 			players.get(0).setColor(PlayerColors.RED);
@@ -81,10 +88,14 @@ public class Game {
 			players.get(5).setColor(PlayerColors.ORANGE);
 		}
 	}
-
-	/* Converts the board to a long string of format (COLOR row column)
-	* repeating for every spot on the board.
-	*/
+	
+	
+	/**
+	 * Converts the board to a long string of format (COLOR row column)
+	 * repeating for every spot on the board.
+	 * @param board Board to send
+	 * @return Board string
+	 */
 	private String createBoardString(Board board) {
 
 		MessageBuilder mb = new MessageBuilder();
@@ -95,8 +106,11 @@ public class Game {
 		}
 		return mb.build();
 	}
-
-	/* Check if game has a winner */
+	
+	/**
+	 * Check if the player has won
+	 * @return If the player has won
+	 */
 	private boolean hasWinner() {
 		
 		for(int r = 0; r < rows; r++) {
@@ -112,56 +126,81 @@ public class Game {
 		return true;
 	}
 	
-	/* Move the pawn and update the board */
+	/**
+	 * Move the pawn and update the board
+	 * @param x1 Starting x
+	 * @param y1 Starting y
+	 * @param x2 Ending x
+	 * @param y2 Ending y
+	 */
 	private void movePawn(int x1, int y1, int x2, int y2){
 		board.setColor(y1, x1, Color.WHITE);
 		board.setColor(y2, x2, currentPlayer.getColor().color);
 	}
 	
-	/* Sets the starting player to a player playing RED
-	* Might change in the future
-	*  */
+	
+	/**
+	 * Selects first player at random
+	 */
 	private void setFirstPlayer() {
-		currentPlayer = players.get(0);
+		Random rand = new Random();
+		int p = rand.nextInt(playersNumber);
+		currentPlayer = players.get(p);
 	}
 	
+	/**
+	 * Reassigns next players
+	 */
 	private void reassignPlayers() {
 		for(Player p : players) {
 			p.reassignNextPlayer();
 		}
 	}
 	
-	/* Main player class */
+	/** Main player class */
 	class Player implements Runnable {
 		
-		/* Player number */
+		/** Player number */
 		int thisPlayerNumber;
-		/* The next player on the list */
+		/** The next player on the list */
 		Player nextPlayer;
-		/* Player's socket */
+		/** Player's socket */
 		Socket socket;
-		/* Player's way to communicate with client */
+		/** Player's input */
 		Scanner input;
+		/** Player output */
 		PrintWriter output;
-		/* Player's color */
+		/** Player's color */
 		PlayerColors color;
-		/* Has player just jumped? */
+		/** Has player just jumped? */
 		boolean afterJump;
-		/**Has the player already won? */
+		/** Has the player already won? */
 		boolean alreadyWon = false;
-		/**How many players already won */
+		/** How many players already won */
 		int playersWon = 0;
 		
-		/* Returns player color */
+		/**
+		 * Returns the name of the color
+		 * @return Name of the color
+		 */
 		private PlayerColors getColor() {
 			return color;
 		}
 		
-		/* Sets player color */
+		/**
+		 * Sets player color
+		 * @param color Color to be set
+		 */
 		private void setColor(PlayerColors color) {
 			this.color = color;
 		}
 		
+		/**
+		 * Player constructor
+		 * @param socket Player socket
+		 * @param thisPlayerNumber Player number (from 0 to number of players-1)
+		 * @throws Exception Exception
+		 */
 		public Player(Socket socket, int thisPlayerNumber) throws Exception {
 			this.socket = socket;
 			this.thisPlayerNumber = thisPlayerNumber;
@@ -169,10 +208,10 @@ public class Game {
 			this.output = new PrintWriter(socket.getOutputStream(), true);
 		}
 		
-		/* Method player calls as a thread
-		* If everything is ok - calls setup(),
-		* then for the rest of the game - processCommands();
-		* */
+		
+		/**
+		 * Starts player thread
+		 */
 		@Override
 		public void run() {
 			try {
@@ -181,9 +220,6 @@ public class Game {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				/* if (nextPlayer != null && nextPlayer.output != null) {
-					sendToOther("PLAYER_LEFT");
-				}*/
 				try {
 					socket.close();
 					} catch (IOException ignored) {
@@ -191,7 +227,7 @@ public class Game {
 			}
 		}
 		
-		/* Runs at a game start */
+		/** Runs at a game start */
 		private void setup() {
 			
 			/* Set up next player for each player */
@@ -202,13 +238,16 @@ public class Game {
 			}
 		}
 		
+		/**
+		 * Reassigns next players after someone wins
+		 */
 		private void reassignNextPlayer() {
 			if(nextPlayer.alreadyWon) {
 				nextPlayer = nextPlayer.nextPlayer;
 			}
 		}
 		
-		/* Interprets the commands from client */
+		/** Interprets the commands from client */
 		private void processCommands() {
 			
 			int x1;
@@ -244,8 +283,13 @@ public class Game {
 		}
 		
 		
-		
-		/* Process the MOVE command */
+		/**
+		 * Processes MOVE command
+		 * @param x1 Starting x
+		 * @param y1 Starting y
+		 * @param x2 Target x
+		 * @param y2 Target y
+		 */
 		private void processMoveCommand(int x1, int y1, int x2, int y2) {
 			
 			MessageBuilder mb = new MessageBuilder();
@@ -299,7 +343,10 @@ public class Game {
 			}
 		}
 		
-		/* Send given message to all players */
+		/**
+		 * Sends message to all players
+		 * @param message The message to send
+		 */
 		private void sendToAll(String message) {
 			for(Player p : players) {
 				p.output.println(message);

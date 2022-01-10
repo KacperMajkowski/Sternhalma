@@ -1,6 +1,5 @@
 package com.example.server;
 import javafx.scene.paint.Color;
-import org.junit.jupiter.api.Assertions;
 import org.junit.Test;
 
 import java.util.Objects;

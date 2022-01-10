@@ -4,6 +4,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.StrokeType;
 
+/**
+ * Class representing single in-game field.
+ */
 public class Field {
 
     final private int x;

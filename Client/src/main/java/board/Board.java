@@ -5,6 +5,9 @@ import javafx.scene.paint.Color;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Class covering board containing fields and pieces.
+ */
 public class Board {
 
     private final List<Field> fieldList;

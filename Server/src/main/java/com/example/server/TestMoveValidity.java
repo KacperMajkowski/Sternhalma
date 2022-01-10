@@ -2,6 +2,9 @@ package com.example.server;
 
 import javafx.scene.paint.Color;
 
+/**
+ * Interface to test move validity
+ */
 public interface TestMoveValidity {
 	
 	/** Determine weather player can perform a move

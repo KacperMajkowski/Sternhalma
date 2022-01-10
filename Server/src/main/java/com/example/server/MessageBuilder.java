@@ -4,7 +4,7 @@ import javafx.scene.paint.Color;
 
 import java.util.Objects;
 
-/* Message builder - builds messages to send to all players */
+/** Builds messages to send to all players */
 public class MessageBuilder {
 	
 	/**

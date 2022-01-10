@@ -2,6 +2,9 @@ package com.example.server;
 
 import javafx.scene.paint.Color;
 
+/**
+ * The game board
+ */
 public class Board {
 	
 	/**Amount of board rows */
@@ -11,19 +14,30 @@ public class Board {
 	/**Table representing pawns on the board */
 	Color[][] board;
 	
-	/** Board constructor */
+	/**
+	 * Board constructor
+	 * @param rows Number of rows
+	 * @param columns Number of columns
+	 */
 	public Board(int rows, int columns) {
 		this.rows = rows;
 		this.columns = columns;
 		board = new Color[rows][columns];
 	}
 	
-	/** Returns color at given row and column */
+	
+	/**
+	 * Returns the color of given spot
+	 * @param row Spot row
+	 * @param column Spot column
+	 * @return Color
+	 */
 	public Color getColor(int row, int column) {
 		return board[row][column];
 	}
 	
 	/**
+	 * Sets the color of a given spot
 	 * @param row Set color in this row
 	 * @param column Set color in this column
 	 * @param color Set this color
@@ -33,10 +47,11 @@ public class Board {
 	}
 	
 	/**
+	 * Returns the color of triangle the given point is in
 	 * @param r Row
 	 * @param c Column
 	 * @return color of triangle in this spot
-	 * Returns the color of triangle the given point is in */
+	 */
 	public Color getTriangle(int r, int c) {
 		
 		if((r == 0 && c == 6) ||
@@ -121,7 +136,11 @@ public class Board {
 		return Color.WHITE;
 	}
 	
-	/* Create pieces depending on amount of players */
+	
+	/**
+	 * Sets up the board
+	 * @param playersNumber Number of players in a game
+	 */
 	public void setupBoard(int playersNumber) {
 		
 		for(int c = 0; c < columns; c++) {

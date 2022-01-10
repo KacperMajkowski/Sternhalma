@@ -1,5 +1,9 @@
 package com.example.server;
 
+
+/**
+ * Main class
+ */
 public class Main {
     /** Creates new server */
     public static void main(String[] args) {

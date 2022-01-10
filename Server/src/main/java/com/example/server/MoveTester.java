@@ -2,6 +2,9 @@ package com.example.server;
 
 import javafx.scene.paint.Color;
 
+/**
+ * Test if the move is legal
+ */
 public class MoveTester implements TestMoveValidity {
 	
 	/** Starting x */

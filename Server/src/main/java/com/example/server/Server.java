@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Game server
+ */
 public class Server {
 
     /** The server socket */

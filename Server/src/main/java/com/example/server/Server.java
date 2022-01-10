@@ -11,17 +11,22 @@ import java.util.List;
 
 public class Server {
 
-    /* The server socket */
+    /** The server socket */
     private final ServerSocket serverSocket;
-    /* The list of player sockets */
+    /** The list of player sockets */
     private final List<Socket> playerSockets = new ArrayList<>();
-    /* The number of player */
+    /** The number of player */
     int playersNumber;
-    /* Input and output */
+    /** Input */
     private BufferedReader in;
+    /** Output */
     private PrintWriter out;
-
-    /* Server constructor - throws exception if it cannot connect to given port */
+    
+    /**
+     * Server constructor
+     * @param port Server port
+     * @throws Exception Exception
+     */
     Server( int port ) throws Exception
     {
         System.out.println("Launching server...");
@@ -34,8 +39,11 @@ public class Server {
         }
         connectPlayer();
     }
-
-    /* Connect players recursively until START button is pressed */
+    
+    /**
+     * Connect players recursively until START button is pressed
+     * @throws Exception Exception
+     */
     private void connectPlayer() throws Exception {
         try
         {
@@ -58,7 +66,7 @@ public class Server {
         }
     }
 
-    /* Creates game based on playerSockets list */
+    /** Creates game based on playerSockets list */
     private void createGame() {
         new Game(playerSockets);
     }

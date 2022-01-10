@@ -9,16 +9,13 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.Objects;
 
-/**
- * Class responsible for Player-Server communication, execution of messages and player's interactions.
- */
 public class Player
 {
     private final Board board;
     private final Color playerColor;
     private final BufferedReader in;
     private final PrintWriter out;
-    private Color currentPlayerColor = Color.RED;
+    private Color currentPlayerColor = Color.BLACK;
     private int waitForResponses = 0;
     private Field lastClickedField;
     private boolean blockedSelecting;
@@ -131,7 +128,7 @@ public class Player
         else {
             Alert alert = new Alert( Alert.AlertType.INFORMATION);
             alert.setTitle("Win");
-            alert.setHeaderText("Player "+color+" have placed "+p);
+            alert.setHeaderText("Player "+currentPlayerColor+" has placed "+p);
             alert.showAndWait();
         }
     }

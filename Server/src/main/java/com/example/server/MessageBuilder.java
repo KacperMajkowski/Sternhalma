@@ -7,10 +7,17 @@ import java.util.Objects;
 /* Message builder - builds messages to send to all players */
 public class MessageBuilder {
 	
+	/**
+	 * Message to send
+	 */
 	String message;
 	
-	/* Adds word to message if it's a: */
-	/* String */
+	
+	/**
+	 * Adds string to the message
+	 * @param addon string to add
+	 * @return modified message
+	 */
 	public MessageBuilder add(String addon) {
 		if(Objects.equals(message, null)){
 			this.message = addon;
@@ -20,7 +27,11 @@ public class MessageBuilder {
 		return this;
 	}
 	
-	/* Int */
+	/**
+	 * Adds int to the message
+	 * @param addon int to add
+	 * @return modified message
+	 */
 	public MessageBuilder add(int addon) {
 		if(Objects.equals(message, null)){
 			this.message = String.valueOf(addon);
@@ -30,7 +41,11 @@ public class MessageBuilder {
 		return this;
 	}
 	
-	/* Color */
+	/**
+	 * Adds color to the message
+	 * @param addon color to add
+	 * @return modified message
+	 */
 	public MessageBuilder add(Color addon) {
 		if(Objects.equals(message, null)){
 			this.message = String.valueOf(addon);
@@ -40,12 +55,15 @@ public class MessageBuilder {
 		return this;
 	}
 	
-	/* Clears the message */
+	/** Clears the message */
 	public void clear() {
 		this.message = null;
 	}
 	
-	/* Builds the message */
+	/**
+	 * Builds the message
+	 * @return the message
+	 */
 	public String build() {
 		return message;
 	}

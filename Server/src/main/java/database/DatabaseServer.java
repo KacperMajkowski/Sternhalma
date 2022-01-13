@@ -13,17 +13,17 @@ public class DatabaseServer {
     }
 
     @Bean
-    public CommandLineRunner run(GameRepository gameRepository) {
+    public CommandLineRunner run(MoveRepository moveRepository) {
         return (args -> {
-            Insert(gameRepository);
-            System.out.println(gameRepository.findAll());
+            Insert(moveRepository);
+            System.out.println(moveRepository.findAll());
         });
     }
 
-    private  void Insert(GameRepository gameRepository) {
-        gameRepository.save(new Game(4));
-        gameRepository.save(new Game(2));
-        gameRepository.save(new Game(6));
+    private  void Insert(MoveRepository gameRepository) {
+        gameRepository.save(new Move(1,"A",1,1,1,2));
+        //gameRepository.save(new Game(2));
+        //gameRepository.save(new Game(6));
     }
 
 }

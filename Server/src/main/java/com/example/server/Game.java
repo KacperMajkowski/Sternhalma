@@ -7,11 +7,13 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.Executors;
+import database.*;
+import org.springframework.boot.SpringApplication;
 
 /**
  * Main game class
  */
-public class Game {
+public class Game extends DatabaseServer {
 
 	/** Current player making the move */
 	Player currentPlayer;
@@ -27,6 +29,9 @@ public class Game {
 	int columns = 13;
 	/** The game board */
 	Board board = new Board(rows, columns);
+	
+	public static GameRepository gr;
+	public static MoveRepository mr;
 	
 	/**
 	 * Game constructor
@@ -59,6 +64,8 @@ public class Game {
 			p.output.println("COLOR " + currentPlayer.getColor());
 			pool.execute(p);
 		}
+		
+		SpringApplication.run(DatabaseServer.class);
 		
 		
 	}
@@ -136,6 +143,9 @@ public class Game {
 	private void movePawn(int x1, int y1, int x2, int y2){
 		board.setColor(y1, x1, Color.WHITE);
 		board.setColor(y2, x2, currentPlayer.getColor().color);
+		InsertMove();
+		System.out.println(gr.findAll());
+		System.out.println(mr.findAll());
 	}
 	
 	

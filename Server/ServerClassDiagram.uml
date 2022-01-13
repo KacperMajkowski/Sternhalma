@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>C:/Users/Kacper/Desktop/TPL4/Server</OriginalElement>
+  <nodes>
+    <node x="58.33472222222224" y="732.0">com.example.server.MoveTester</node>
+    <node x="1081.6680555555554" y="0.0">com.example.server.Server</node>
+    <node x="373.50138888888887" y="0.0">com.example.server.Board</node>
+    <node x="0.0" y="385.0">com.example.server.TestMoveValidity</node>
+    <node x="543.6680555555555" y="274.0">com.example.server.Game</node>
+    <node x="728.0" y="1144.0">com.example.server.Main</node>
+    <node x="244.2430555555556" y="285.0">com.example.server.PlayerColors</node>
+    <node x="430.33472222222224" y="710.0">com.example.server.Game.Player</node>
+    <node x="0.0" y="1144.0">com.example.server.MessageBuilder</node>
+    <node x="241.0" y="1144.0">com.example.server.playerColorTest</node>
+    <node x="783.6680555555555" y="329.5">com.example.server.moveValidityTest</node>
+    <node x="486.0" y="1144.0">com.example.server.messageBuilderTest</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.example.server.MoveTester" target="com.example.server.PlayerColors" relationship="DEPENDENCY">
+      <point x="117.33333333333337" y="-172.5" />
+      <point x="351.6680555555556" y="689.0" />
+      <point x="298.5013888888889" y="689.0" />
+      <point x="298.5013888888889" y="679.0" />
+      <point x="408.375" y="679.0" />
+      <point x="408.375" y="639.0" />
+      <point x="390.4930555555556" y="639.0" />
+      <point x="48.75" y="161.0" />
+    </edge>
+    <edge source="com.example.server.Game.Player" target="com.example.server.PlayerColors" relationship="TO_ONE">
+      <point x="-93.33333333333331" y="-194.5" />
+      <point x="477.0013888888889" y="689.0" />
+      <point x="519.4166666666666" y="689.0" />
+      <point x="519.4166666666666" y="659.0" />
+      <point x="323.1263888888889" y="659.0" />
+      <point x="323.1263888888889" y="639.0" />
+      <point x="292.9930555555556" y="639.0" />
+      <point x="-48.75" y="161.0" />
+    </edge>
+    <edge source="com.example.server.Game" target="com.example.server.Board" relationship="TO_ONE">
+      <point x="-55.0" y="-172.0" />
+      <point x="598.6680555555555" y="253.0" />
+      <point x="189.75" y="253.0" />
+      <point x="189.75" y="233.0" />
+      <point x="422.50138888888887" y="233.0" />
+      <point x="-49.0" y="106.0" />
+    </edge>
+    <edge source="com.example.server.Game" target="com.example.server.Game.Player" relationship="TO_MANY">
+      <point x="-73.33333333333334" y="172.0" />
+      <point x="580.3347222222221" y="679.0" />
+      <point x="519.4166666666666" y="679.0" />
+      <point x="519.4166666666666" y="689.0" />
+      <point x="477.0013888888889" y="689.0" />
+      <point x="-93.33333333333331" y="-194.5" />
+    </edge>
+    <edge source="com.example.server.Game" target="com.example.server.Game.Player" relationship="TO_ONE">
+      <point x="-73.33333333333334" y="172.0" />
+      <point x="580.3347222222221" y="679.0" />
+      <point x="519.4166666666666" y="679.0" />
+      <point x="519.4166666666666" y="689.0" />
+      <point x="477.0013888888889" y="689.0" />
+      <point x="-93.33333333333331" y="-194.5" />
+    </edge>
+    <edge source="com.example.server.MoveTester" target="com.example.server.Board" relationship="DEPENDENCY">
+      <point x="117.33333333333337" y="-172.5" />
+      <point x="351.6680555555556" y="689.0" />
+      <point x="298.5013888888889" y="689.0" />
+      <point x="298.5013888888889" y="649.0" />
+      <point x="200.5" y="649.0" />
+      <point x="200.5" y="243.0" />
+      <point x="733.8833333333333" y="243.0" />
+      <point x="733.8833333333333" y="233.0" />
+      <point x="520.5013888888889" y="233.0" />
+      <point x="49.0" y="106.0" />
+    </edge>
+    <edge source="com.example.server.moveValidityTest" target="com.example.server.Board" relationship="DEPENDENCY">
+      <point x="0.0" y="-116.5" />
+      <point x="910.1680555555555" y="243.0" />
+      <point x="733.8833333333333" y="243.0" />
+      <point x="733.8833333333333" y="233.0" />
+      <point x="520.5013888888889" y="233.0" />
+      <point x="49.0" y="106.0" />
+    </edge>
+    <edge source="com.example.server.Game" target="com.example.server.Game.Player" relationship="DEPENDENCY">
+      <point x="0.0" y="172.0" />
+      <point x="653.6680555555555" y="679.0" />
+      <point x="595.6597222222223" y="679.0" />
+      <point x="595.6597222222223" y="689.0" />
+      <point x="570.3347222222222" y="689.0" />
+      <point x="0.0" y="-194.5" />
+    </edge>
+    <edge source="com.example.server.MoveTester" target="com.example.server.TestMoveValidity" relationship="REALIZATION">
+      <point x="-117.33333333333331" y="-172.5" />
+      <point x="117.00138888888893" y="689.0" />
+      <point x="89.5" y="689.0" />
+      <point x="0.0" y="61.0" />
+    </edge>
+    <edge source="com.example.server.MoveTester" target="com.example.server.PlayerColors" relationship="TO_ONE">
+      <point x="0.0" y="-172.5" />
+      <point x="234.33472222222224" y="689.0" />
+      <point x="259.6597222222223" y="689.0" />
+      <point x="259.6597222222223" y="669.0" />
+      <point x="323.1263888888889" y="669.0" />
+      <point x="323.1263888888889" y="639.0" />
+      <point x="292.9930555555556" y="639.0" />
+      <point x="-48.75" y="161.0" />
+    </edge>
+    <edge source="com.example.server.Game.Player" target="com.example.server.Game" relationship="INNER_CLASS">
+      <point x="93.33333333333331" y="-194.5" />
+      <point x="663.6680555555556" y="689.0" />
+      <point x="727.0013888888889" y="689.0" />
+      <point x="73.33333333333331" y="172.0" />
+    </edge>
+    <edge source="com.example.server.MoveTester" target="com.example.server.Board" relationship="TO_ONE">
+      <point x="0.0" y="-172.5" />
+      <point x="234.33472222222224" y="689.0" />
+      <point x="259.6597222222223" y="689.0" />
+      <point x="259.6597222222223" y="659.0" />
+      <point x="189.5" y="659.0" />
+      <point x="189.75" y="233.0" />
+      <point x="422.50138888888887" y="233.0" />
+      <point x="-49.0" y="106.0" />
+    </edge>
+    <edge source="com.example.server.Game.Player" target="com.example.server.PlayerColors" relationship="DEPENDENCY">
+      <point x="0.0" y="-194.5" />
+      <point x="570.3347222222222" y="689.0" />
+      <point x="595.6597222222223" y="689.0" />
+      <point x="595.6597222222223" y="649.0" />
+      <point x="408.375" y="649.0" />
+      <point x="408.375" y="639.0" />
+      <point x="390.4930555555556" y="639.0" />
+      <point x="48.75" y="161.0" />
+    </edge>
+    <edge source="com.example.server.Game" target="com.example.server.Board" relationship="DEPENDENCY">
+      <point x="55.0" y="-172.0" />
+      <point x="708.6680555555555" y="243.0" />
+      <point x="733.8833333333333" y="243.0" />
+      <point x="733.8833333333333" y="233.0" />
+      <point x="520.5013888888889" y="233.0" />
+      <point x="49.0" y="106.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.8857459379615953" showDependencies="true" x="452.0645998301269" y="1077.2774118235625" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+    <Category>Inner Classes</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

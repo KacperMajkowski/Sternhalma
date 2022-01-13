@@ -2,5 +2,11 @@ package database;
 
 import org.springframework.data.repository.CrudRepository;
 
-public interface MoveRepository extends CrudRepository<Move, Integer>{
+import java.awt.*;
+import java.net.Inet4Address;
+
+public interface MoveRepository extends CrudRepository<Move, Integer> {
+
+
+
 }

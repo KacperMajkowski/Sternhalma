@@ -1,4 +1,10 @@
-package com.example.server;
+package Replay;
+
+import database.GameRepository;
+import database.MoveRepository;
+
+import database.DatabaseServer;
+import org.springframework.boot.SpringApplication;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -12,7 +18,7 @@ import java.util.List;
 /**
  * Game server
  */
-public class ServerReplay {
+public class ServerReplay extends DatabaseServer {
 
     /** The server socket */
     private final ServerSocket serverSocket;
@@ -24,6 +30,11 @@ public class ServerReplay {
     private BufferedReader in;
     /** Output */
     private PrintWriter out;
+    
+    int gameNumber;
+    
+    public static GameRepository gr;
+    public static MoveRepository mr;
     
     /**
      * Server constructor
@@ -46,17 +57,24 @@ public class ServerReplay {
     /**
      * Connect players recursively until START button is pressed
      * @throws Exception Exception
+     *
      */
     private void connectPlayer() throws Exception {
         try
         {
+            SpringApplication.run(DatabaseServer.class);
             playerSockets.add( serverSocket.accept() );
-            playerSockets.add( new Socket() );
             in = new BufferedReader( new InputStreamReader( playerSockets.get(0).getInputStream() ) );
             out = new PrintWriter( playerSockets.get(0).getOutputStream(), true );
-            playersNumber = 2;
-            //out.println(playersNumber);
-            String read = in.readLine();
+            gameNumber = Integer.parseInt(in.readLine());
+            System.out.println("Server got input: " + gameNumber);
+            playersNumber = getPlayerNumber(gameNumber).getPlayersNumber();
+            
+            for(int s = 0; s < playersNumber-1; s++) {
+                playerSockets.add(new Socket());
+            }
+            
+            
             createGame();
         }
         catch( Exception e )
@@ -67,6 +85,6 @@ public class ServerReplay {
 
     /** Creates game based on playerSockets list */
     private void createGame() {
-        new GameReplay(playerSockets);
+        new GameReplay(playerSockets, gameNumber);
     }
 }

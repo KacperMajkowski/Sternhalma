@@ -18,8 +18,10 @@ public class Move {
     private int y1;
     private int x2;
     private int y2;
+    
 
-    public Move(int gameNumber,String command, String color, int x1, int y1, int x2, int y2) {
+    
+    public Move(int gameNumber, String command, String color, int x1, int y1, int x2, int y2) {
         this.gameNumber = gameNumber;
         this.command = command;
         this.color = color;
@@ -30,6 +32,14 @@ public class Move {
     }
 
     public Move() {
+    }
+    
+    public String getCommand() {
+        return command;
+    }
+    
+    public void setCommand(String command) {
+        this.command = command;
     }
 
     public Integer getMoveNumber() {

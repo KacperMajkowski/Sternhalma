@@ -1,7 +1,7 @@
-package com.example.server;
+package Replay;
 
 
-import Replay.ServerReplay;
+import com.example.server.Server;
 
 /**
  * Main class
@@ -11,7 +11,7 @@ public class Main {
     public static void main(String[] args) {
         try
         {
-            new Server( 4444 );
+            new ServerReplay( 4445 );
         }
         
         catch(Exception e )

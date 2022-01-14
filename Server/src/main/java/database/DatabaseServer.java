@@ -1,10 +1,14 @@
 package database;
 
+import Replay.GameReplay;
+import Replay.ServerReplay;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import com.example.server.Game;
+
+import java.util.List;
 
 @SpringBootApplication
 public class DatabaseServer {
@@ -18,6 +22,12 @@ public class DatabaseServer {
         return (args -> {
             Game.gr = gameRepository;
             Game.mr = moveRepository;
+            GameReplay.gr = gameRepository;
+            GameReplay.mr = moveRepository;
+            ServerReplay.gr = gameRepository;
+            ServerReplay.mr = moveRepository;
+            //System.out.println(gameRepository.findAll());
+            //System.out.println(moveRepository.findAll());
         });
     }
 
@@ -27,6 +37,14 @@ public class DatabaseServer {
     
     public void InsertGame(int playersNumber) {
         Game.gr.save(new Games(playersNumber));
+    }
+    
+    public List<Move> getMoves(int id) {
+        return GameReplay.mr.findMovesByGameNumber(id);
+    }
+    
+    public Games getPlayerNumber(int num) {
+        return ServerReplay.gr.findGamesByGameNumber(num);
     }
 
     public int getGameNo() {

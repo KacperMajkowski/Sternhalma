@@ -66,6 +66,7 @@ public class Game extends DatabaseServer {
 			p.output.println(p.getColor());
 			p.output.println(createBoardString(board));
 			p.output.println("COLOR " + currentPlayer.getColor());
+			InsertMove(gameNumber,"COLOR",currentPlayer.getColor().color.toString(),-1,-1,-1,-1);
 			pool.execute(p);
 		}
 	}

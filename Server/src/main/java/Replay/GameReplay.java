@@ -1,7 +1,11 @@
-package com.example.server;
+package Replay;
 
+import com.example.server.Board;
+import com.example.server.MessageBuilder;
+import com.example.server.PlayerColors;
 import database.DatabaseServer;
 import database.GameRepository;
+import database.Move;
 import database.MoveRepository;
 import javafx.scene.paint.Color;
 import org.springframework.boot.SpringApplication;
@@ -34,17 +38,21 @@ public class GameReplay extends DatabaseServer {
 	
 	Player spectator;
 	
+	int gameNumber;
+	
 	public static GameRepository gr;
 	public static MoveRepository mr;
 	
 	/**
 	 * Game constructor
 	 * @param playerSockets List of players sockets
+	 * @param gameNumber Game number
 	 */
-	public GameReplay(List<Socket> playerSockets) {
+	public GameReplay(List<Socket> playerSockets, int gameNumber) {
 		this.playerSockets = playerSockets;
 		this.playersNumber = playerSockets.size();
 		this.players = new ArrayList<>();
+		this.gameNumber = gameNumber;
 		
 		/* Add players to list based on sockets */
 		for(int i = 0; i < playersNumber; i++) {
@@ -65,7 +73,7 @@ public class GameReplay extends DatabaseServer {
 		//sendToSpectator("COLOR " + Color.BLACK);
 		//sendToSpectator("COLOR " + Color.RED);
 		
-		SpringApplication.run(DatabaseServer.class);
+		//SpringApplication.run(DatabaseServer.class);
 		pool.execute(spectator);
 	}
 	
@@ -113,6 +121,8 @@ public class GameReplay extends DatabaseServer {
 		
 		MessageBuilder mb = new MessageBuilder();
 		
+		List<Move> moves;
+		
 		
 		/**
 		 * Player constructor
@@ -154,25 +164,24 @@ public class GameReplay extends DatabaseServer {
 		/** Interprets the commands from client */
 		private void processCommands() throws Exception {
 			
+			moves = getMoves(gameNumber);
 			
-			
-			int x1 = 5;
-			int y1 = 13;
-			int x2 = 5;
-			int y2 = 12;
-			
-			while (y2 > 5) {
+			for(Move m : moves) {
 				System.out.println("Sending move...");
+				int x1 = m.getX1();
+				int y1 = m.getY1();
+				int x2 = m.getX2();
+				int y2 = m.getY2();
+				String command = m.getCommand();
+				String color = m.getColor();
 				mb.clear();
-				sendToSpectator(mb.add("COLOR").add(Color.RED).build());
-				sendMoves(x1, y1, x2, y2);
-				Thread.sleep(1000);
-				y1--;
-				y2--;
+				if(command.equals("COLOR")) {
+					sendToSpectator(mb.add("COLOR").add(color).build());
+				} else if(command.equals("MOVE")) {
+					sendMoves(x1, y1, x2, y2);
+					Thread.sleep(1000);
+				}
 			}
 		}
-		
-		
-
 	}
 }

@@ -28,10 +28,12 @@ public class Player
         this.out = out;
         this.in = in;
         this.playerColor = playerColor;
+        System.out.println("My color: " + playerColor);
     }
 
     public void setCurrentPlayerColor(Color currentPlayerColor) {
         this.currentPlayerColor = currentPlayerColor;
+        System.out.println("Set current player color to: " + currentPlayerColor);
     }
 
     public Color getCurrentPlayerColor() {
@@ -54,18 +56,26 @@ public class Player
             e.printStackTrace();
         }
     }
+    
+    public void setWaitForResponses(int waitForResponses) {
+        this.waitForResponses = waitForResponses;
+    }
 
     /**
      * Waiting for server responses and handling them.
      */
     public void readServerMessages()
     {
+        System.out.println("Current player: " + currentPlayerColor);
+        System.out.println("Wait for responses: " + waitForResponses);
         while (!playersTurn() || waitForResponses >0) {
             waitForResponses--;
             String response = null;
             try {
                 response = in.readLine();
-                System.out.println("Received response: " + response);
+                if(response != null) {
+                    System.out.println("Received response: " + response);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -89,7 +99,8 @@ public class Player
             Color color = Color.web(words[1]);
 
             blockedSelecting = false;
-            if (color.equals(currentPlayerColor) && color.equals(playerColor)) {
+            if (color.equals(currentPlayerColor) && color.equals(playerColor) && currentPlayerColor != Color.BLACK) {
+              
                 if (words[2].equals("ANOTHER")) {
                     makeAnotherMove();
                 }

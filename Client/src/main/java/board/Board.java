@@ -81,6 +81,7 @@ public class Board {
      */
     private void removePiece(int x2, int y2) {
         Objects.requireNonNull(getField(x2, y2)).setColor(Color.WHITE);
+        System.out.println("Removed piece from: (" + x2 + ", " + y2 + ")" );
     }
 
     /**

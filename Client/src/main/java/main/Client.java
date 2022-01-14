@@ -73,7 +73,10 @@ public class Client {
      */
     private void setPlayerColor() {
         try {
-            playerColor = Color.web(in.readLine());
+            System.out.println("Waiting for color...");
+            var c = in.readLine();
+            System.out.println("Received " + c.toString());
+            playerColor = Color.web(c);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -111,13 +114,19 @@ public class Client {
     private void initialize() {
 
         Thread turn = new Thread(this::setCurrentTurn);
-
+        Thread t = new Thread(this::readMessages);
+        
         newConnection();
         assignFields();
         createPlayer();
         turn.start();
         createButton();
         player.addStartingPieces();
+        player.setWaitForResponses(1);
+        t.start();
+    }
+    
+    private void readMessages() {
         player.readServerMessages();
     }
 

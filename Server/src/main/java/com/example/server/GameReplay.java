@@ -158,10 +158,10 @@ public class GameReplay extends DatabaseServer {
 			
 			int x1 = 5;
 			int y1 = 13;
-			int x2 = 6;
+			int x2 = 5;
 			int y2 = 12;
 			
-			while (y2 > 8) {
+			while (y2 > 5) {
 				System.out.println("Sending move...");
 				mb.clear();
 				sendToSpectator(mb.add("COLOR").add(Color.RED).build());

@@ -32,6 +32,7 @@ public class Game extends DatabaseServer {
 	
 	public static GameRepository gr;
 	public static MoveRepository mr;
+	public int gameNumber = 0;
 	
 	/**
 	 * Game constructor
@@ -52,7 +53,10 @@ public class Game extends DatabaseServer {
 		/* Set player colors and creates pawns */
 		setPlayersColors();
 		board.setupBoard(playersNumber);
-		
+		SpringApplication.run(DatabaseServer.class);
+		InsertGame(playersNumber);
+		gameNumber = getGameNo();
+
 		/* Set the first player */
 		setFirstPlayer();
 		
@@ -64,10 +68,6 @@ public class Game extends DatabaseServer {
 			p.output.println("COLOR " + currentPlayer.getColor());
 			pool.execute(p);
 		}
-		
-		SpringApplication.run(DatabaseServer.class);
-		
-		
 	}
 	
 	/**
@@ -143,9 +143,7 @@ public class Game extends DatabaseServer {
 	private void movePawn(int x1, int y1, int x2, int y2){
 		board.setColor(y1, x1, Color.WHITE);
 		board.setColor(y2, x2, currentPlayer.getColor().color);
-		InsertMove();
-		System.out.println(gr.findAll());
-		System.out.println(mr.findAll());
+		InsertMove(gameNumber, "MOVE",null,x1,y1,x2,y2);
 	}
 	
 	
@@ -286,6 +284,7 @@ public class Game extends DatabaseServer {
 					/* Skips turn */
 						mb.clear();
 						sendToAll(mb.add("COLOR").add(currentPlayer.nextPlayer.getColor().color).build());
+						InsertMove(gameNumber,"COLOR",currentPlayer.nextPlayer.getColor().color.toString(),-1,-1,-1,-1);
 						afterJump = false;
 						currentPlayer = currentPlayer.nextPlayer;
 				}
@@ -319,9 +318,11 @@ public class Game extends DatabaseServer {
 				if(mt.isJumpMove()) {
 					afterJump = true;
 					mb.add("COLOR").add(currentPlayer.getColor().color).add("ANOTHER");
+					InsertMove(gameNumber,"COLOR",currentPlayer.getColor().color.toString(),-1,-1,-1,-1);
 				} else {
 					afterJump = false;
 					mb.add("COLOR").add(currentPlayer.nextPlayer.getColor().color);
+					InsertMove(gameNumber,"COLOR",currentPlayer.nextPlayer.getColor().color.toString(),-1,-1,-1,-1);
 				}
 				sendToAll(mb.build());
 				
@@ -346,9 +347,11 @@ public class Game extends DatabaseServer {
 				if(afterJump) {
 					mb.clear();
 					sendToAll(mb.add("COLOR").add(currentPlayer.getColor().color).add("ANOTHER").build());
+					InsertMove(gameNumber,"COLOR",currentPlayer.getColor().color.toString(),-1,-1,-1,-1);
 				} else {
 					mb.clear();
 					sendToAll(mb.add("COLOR").add(currentPlayer.getColor().color).build());
+					InsertMove(gameNumber,"COLOR",currentPlayer.getColor().color.toString(),-1,-1,-1,-1);
 				}
 			}
 		}

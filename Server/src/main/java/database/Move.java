@@ -12,14 +12,16 @@ public class Move {
     @GeneratedValue
     private Integer moveNumber;
     private int gameNumber;
+    private String command;
     private String color;
     private int x1;
     private int y1;
     private int x2;
     private int y2;
 
-    public Move(int gameNumber, String color, int x1, int y1, int x2, int y2) {
+    public Move(int gameNumber,String command, String color, int x1, int y1, int x2, int y2) {
         this.gameNumber = gameNumber;
+        this.command = command;
         this.color = color;
         this.x1 = x1;
         this.y1 = y1;
@@ -91,13 +93,12 @@ public class Move {
         return "Move{" +
                 "moveNumber=" + moveNumber +
                 ", gameNumber=" + gameNumber +
-                ", color=" + color +
+                ", command='" + command + '\'' +
+                ", color='" + color + '\'' +
                 ", x1=" + x1 +
                 ", y1=" + y1 +
                 ", x2=" + x2 +
                 ", y2=" + y2 +
                 '}';
     }
-
-
 }

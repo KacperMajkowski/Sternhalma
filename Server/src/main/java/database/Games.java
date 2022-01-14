@@ -5,17 +5,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Game {
+public class Games {
     @Id
     @GeneratedValue
-    private Integer id;
+    private Integer gameNumber;
     private int playersNumber;
 
-    public Game(int playersNumber) {
+    public Games(int playersNumber) {
         this.playersNumber = playersNumber;
     }
 
-    public Game() {
+    public Games() {
 
     }
 
@@ -27,18 +27,18 @@ public class Game {
         this.playersNumber = playersNumber;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getGameNumber() {
+        return gameNumber;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setGameNumber(Integer id) {
+        this.gameNumber = id;
     }
 
     @Override
     public String toString() {
         return "Game{" +
-                "id=" + id +
+                "id=" + gameNumber +
                 ", playersNumber=" + playersNumber +
                 '}';
     }

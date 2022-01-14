@@ -2,7 +2,6 @@ package main;
 
 import board.Board;
 import board.Field;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -232,11 +231,72 @@ public class Client {
             }
 
             try {
-                connectToServer(host, port);
+                if (port == 4445) {
+                    connectToReadGamesServer(host,port);
+                }
+                else {
+                    connectToServer(host, port);
+                }
             } catch (Exception e) {
                 Alert alert = new Alert( Alert.AlertType.ERROR);
                 alert.setTitle("Exception");
                 alert.setHeaderText(e.getMessage());
+
+                alert.showAndWait();
+                System.exit(0);
+            }
+        }
+    }
+
+    private void connectToReadGamesServer(String host, int port) throws Exception {
+        Socket socket = new Socket( host, port );
+        out = new PrintWriter( socket.getOutputStream(), true );
+        in = new BufferedReader( new InputStreamReader( socket.getInputStream() ) );
+
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("Establishing a connection");
+
+        ButtonType connectButtonType = new ButtonType("Watch", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(connectButtonType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField ipField = new TextField();
+        ipField.setText( "0");
+
+        grid.add(new Label("Game number:"), 0, 0);
+        grid.add(ipField, 1, 0);
+        dialog.getDialogPane().setContent(grid);
+
+        Node connectButton = dialog.getDialogPane().lookupButton(connectButtonType);
+
+        ipField.textProperty().addListener(
+                (observable, oldValue, newValue) -> connectButton.setDisable(newValue.trim().isEmpty())
+        );
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == connectButtonType) {
+                return ipField.getText();
+            }
+            else{
+                System.exit(0);
+                return null;
+            }
+        });
+
+        Optional<String> result = dialog.showAndWait();
+
+        if( result.isPresent() ) {
+            try {
+                String gameNumber = result.get();
+                out.println(gameNumber);
+            } catch (Exception e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Exception");
+                alert.setHeaderText("Incorrect values");
 
                 alert.showAndWait();
                 System.exit(0);

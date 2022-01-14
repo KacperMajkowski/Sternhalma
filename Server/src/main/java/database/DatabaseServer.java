@@ -18,24 +18,24 @@ public class DatabaseServer {
         return (args -> {
             Game.gr = gameRepository;
             Game.mr = moveRepository;
-            InsertMove();
-            System.out.println(moveRepository.findAll());
-            InsertGame();
-            System.out.println(gameRepository.findAll());
-            System.out.println(findGame(1));
         });
     }
 
-    public void InsertMove() {
-        Game.mr.save(new Move(1,"A",1,1,1,2));
+    public void InsertMove(int gameNumber, String command, String color, int x1, int y1, int x2, int y2) {
+        Game.mr.save(new Move(gameNumber,command,color,x1,y1,x2,y2));
     }
     
-    public void InsertGame() {
-        Game.gr.save(new database.Game(2));
-    }
-    
-    public database.Game findGame(int id) {
-        return Game.gr.findGamesById(id);
+    public void InsertGame(int playersNumber) {
+        Game.gr.save(new Games(playersNumber));
     }
 
+    public int getGameNo() {
+        int max = 0;
+        for (Games g : Game.gr.findAll()) {
+            if (max < g.getGameNumber()) {
+                max = g.getGameNumber();
+            }
+        }
+        return max;
+    }
 }

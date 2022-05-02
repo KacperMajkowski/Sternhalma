@@ -1,6 +1,6 @@
 # Sternhalma
 Implementation of game known as chineese chequers, trylma or sternhalma.
-It alows to play the game for up to 6 players using the Client-Server technology. 
+It allows to play the game for up to 6 players using the Client-Server technology. 
 
 # Developed by
 [Dominik Gorgosch](https://github.com/Gemi0)
